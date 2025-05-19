@@ -1,0 +1,78 @@
+# Licensed to Elasticsearch B.V. under one or more contributor
+# license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright
+# ownership. Elasticsearch B.V. licenses this file to you under
+# the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+require 'spec_helper'
+
+describe Elastic::ESQL do
+  context 'when initializing' do
+    let(:esql) { Elastic::ESQL.new('sample_data') }
+    it 'shows the expected queries' do
+      expect(esql.sort('@timestamp').run).to eq 'FROM sample_data | SORT @timestamp'
+    end
+
+    xit 'allows to change FROM' do
+      expect(esql.from('something_else').run).to eq 'FROM something_else'
+    end
+
+    it 'uses WHERE' do
+      expect(esql.where('name LIKE "Something"').run).to eq 'FROM sample_data | WHERE name LIKE "Something"'
+    end
+
+    it 'uses limit' do
+      expect(esql.limit(2).run).to eq 'FROM sample_data | LIMIT 2'
+    end
+
+    it 'returns the full query' do
+      expect(
+        esql.sort('@timestamp').ascending.limit(2).where('value > 10').query
+      ).to eq 'FROM sample_data | SORT @timestamp ASC | LIMIT 2 | WHERE value > 10'
+    end
+
+    it 'saves query data and returns with .query' do
+      esql.sort('@timestamp').ascending.limit(2).where('value > 10')
+      expect(
+        esql.query
+      ).to eq 'FROM sample_data | SORT @timestamp ASC | LIMIT 2 | WHERE value > 10'
+    end
+  end
+
+  context 'FROM' do
+    it 'returns a basic quert' do
+      expect(Elastic::ESQL.from('sample_data').run).to eq 'FROM sample_data'
+    end
+  end
+
+  context 'SORT' do
+    it 'uses regular sort' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').run
+      ).to eq 'FROM sample_data | SORT @timestamp'
+    end
+
+    it 'sorts ascending' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').ascending.run
+      ).to eq 'FROM sample_data | SORT @timestamp ASC'
+    end
+
+    it 'sorts descending' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.run
+      ).to eq 'FROM sample_data | SORT @timestamp DESC'
+    end
+  end
+end
