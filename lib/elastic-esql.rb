@@ -57,6 +57,24 @@ module Elastic
       self
     end
 
+    # Use the EVAL command to append columns to a table, with calculated values.
+    # esql.eval('duration_ms', 'event_duration/10000.0')
+    # esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' })
+    # TODO: Can the experience be improved?
+    # TODO: Consider array as argument?
+    def eval(*params)
+      @query[:eval] = if params.size == 1 && params[0].is_a?(Hash)
+                        params[0].map { |k, v| "#{k} = #{v}" }.join(', ')
+                      elsif params.size == 2 && params[0].is_a?(String) && params[1].is_a?(String)
+                        "#{params[0]} = #{params[1]}"
+                      else
+                        raise ArgumentError, 'EVAL needs either a String column name and a String value or a key, ' \
+                                             'value Hash where the keys are the column names and the value ar the ' \
+                                             'function or expression to calculate.'
+                      end
+      self
+    end
+
     def query
       @query.map do |k, v|
         "#{k.upcase} #{v}"
