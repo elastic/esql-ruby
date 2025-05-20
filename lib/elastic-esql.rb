@@ -75,6 +75,18 @@ module Elastic
       self
     end
 
+    # KEEP enables you to specify what columns are returned and the order in which they are returned.
+    # Accepts:
+    #  esql.keep('column1, column2') || esql.keep('column1', 'column2')
+    def keep(*params)
+      @query[:keep] = if params.size > 1
+                        params.join(', ')
+                      else
+                        params[0]
+                      end
+      self
+    end
+
     def query
       @query.map do |k, v|
         "#{k.upcase} #{v}"
