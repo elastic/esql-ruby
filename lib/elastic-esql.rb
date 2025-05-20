@@ -34,14 +34,14 @@ module Elastic
     end
 
     def ascending
-      raise ArgumentError unless @query[:sort]
+      raise ArgumentError, 'No sort field specified' unless @query[:sort]
 
       @query[:sort] = "#{@query[:sort]} ASC"
       self
     end
 
     def descending
-      raise ArgumentError unless @query[:sort]
+      raise ArgumentError, 'No sort field specified' unless @query[:sort]
 
       @query[:sort] = "#{@query[:sort]} DESC"
       self
