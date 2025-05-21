@@ -15,75 +15,42 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'dissect'
+require_relative 'drop'
+require_relative 'eval'
+require_relative 'grok'
+require_relative 'limit'
+require_relative 'keep'
+require_relative 'row'
+require_relative 'sort'
+require_relative 'where'
+
 module Elastic
   # Elastic::ESQL.from('sample_data').sort_descending('@timestamp').limit(3)
   # FORM 'sample_data' | SORT @timestamp desc | LIMIT 3
   class ESQL
+    include Dissect
+    include Drop
+    include Eval
+    include Grok
+    include Keep
+    include Limit
+    include Row
+    include Sort
+    include Where
+
     def initialize(from)
-      @from = from
-      @query = { from: @from }
+      @query = { from: from }
     end
 
+    # Class method to allow instantiating with Elastic::ESQL.from('sample_data')
     def self.from(from)
       new(from)
     end
 
-    def sort(sort)
-      @query[:sort] = sort
-      self
-    end
-
-    def ascending
-      raise ArgumentError, 'No sort field specified' unless @query[:sort]
-
-      @query[:sort] = "#{@query[:sort]} ASC"
-      self
-    end
-
-    def descending
-      raise ArgumentError, 'No sort field specified' unless @query[:sort]
-
-      @query[:sort] = "#{@query[:sort]} DESC"
-      self
-    end
-
-    def limit(limit)
-      @query[:limit] = limit
-      self
-    end
-
-    def where(where)
-      @query[:where] = where
-      self
-    end
-
-    # Use the EVAL command to append columns to a table, with calculated values.
-    # esql.eval('duration_ms', 'event_duration/10000.0')
-    # esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' })
-    # TODO: Can the experience be improved?
-    # TODO: Consider array as argument?
-    def eval(*params)
-      @query[:eval] = if params.size == 1 && params[0].is_a?(Hash)
-                        params[0].map { |k, v| "#{k} = #{v}" }.join(', ')
-                      elsif params.size == 2 && params[0].is_a?(String) && params[1].is_a?(String)
-                        "#{params[0]} = #{params[1]}"
-                      else
-                        raise ArgumentError, 'EVAL needs either a String column name and a String value or a key, ' \
-                                             'value Hash where the keys are the column names and the value ar the ' \
-                                             'function or expression to calculate.'
-                      end
-      self
-    end
-
-    # KEEP enables you to specify what columns are returned and the order in which they are returned.
-    # Accepts:
-    #  esql.keep('column1, column2') || esql.keep('column1', 'column2')
-    def keep(*params)
-      @query[:keep] = if params.size > 1
-                        params.join(', ')
-                      else
-                        params[0]
-                      end
+    # Instance method to allow to update from with esql.from('something_else')
+    def from(from)
+      @query = { from: from }
       self
     end
 
@@ -93,8 +60,41 @@ module Elastic
       end.join(' | ')
     end
 
+    def to_s
+      query
+    end
+
     alias run query
-    alias asc ascending
-    alias desc descending
+
+    private
+
+    # Function for eval, row, and other functions that have one or more columns with values specified
+    # as parameters. The hash_or_string function is called with the caller name since it's the same
+    # logic to use these parameters.
+    def hash_or_string(name, params)
+      # Make sure we use a symbol for the key
+      @query[symbolize(name)] = if params.size == 1 && params[0].is_a?(Hash)
+                                  params[0].map { |k, v| "#{k} = #{v}" }.join(', ')
+                                elsif params.size == 2 && params[0].is_a?(String) && params[1].is_a?(String)
+                                  "#{params[0]} = #{params[1]}"
+                                else
+                                  raise ArgumentError, "#{name.to_s.upcase} needs either a String column name and a String value" \
+                                                       ' or a key value Hash where the keys are the column names and the value ' \
+                                                       'is the function or expression to calculate.'
+                                end
+      self
+    end
+
+    def string_or_strings(name, params)
+      @query[name] = if params.size > 1
+                       params.join(', ')
+                     else
+                       params[0]
+                     end
+    end
+
+    def symbolize(name)
+      name.is_a?(Symbol) ? name : name.to_sym
+    end
   end
 end
