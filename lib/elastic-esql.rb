@@ -21,6 +21,7 @@ require_relative 'eval'
 require_relative 'grok'
 require_relative 'limit'
 require_relative 'keep'
+require_relative 'rename'
 require_relative 'row'
 require_relative 'sort'
 require_relative 'where'
@@ -35,6 +36,7 @@ module Elastic
     include Grok
     include Keep
     include Limit
+    include Rename
     include Row
     include Sort
     include Where
