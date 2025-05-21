@@ -21,15 +21,11 @@ describe Elastic::ESQL do
   context 'when initializing' do
     let(:esql) { Elastic::ESQL.new('sample_data') }
     it 'shows the expected queries' do
-      expect(esql.sort('@timestamp').run).to eq 'FROM sample_data | SORT @timestamp'
+      expect(esql.run).to eq 'FROM sample_data'
     end
 
-    xit 'allows to change FROM' do
+    it 'allows to change FROM' do
       expect(esql.from('something_else').run).to eq 'FROM something_else'
-    end
-
-    it 'uses WHERE' do
-      expect(esql.where('name LIKE "Something"').run).to eq 'FROM sample_data | WHERE name LIKE "Something"'
     end
 
     it 'uses limit' do
@@ -48,31 +44,16 @@ describe Elastic::ESQL do
         esql.query
       ).to eq 'FROM sample_data | SORT @timestamp ASC | LIMIT 2 | WHERE value > 10'
     end
+
+    it 'returns query with to_s' do
+      expect("#{esql}").to eq esql.query
+      expect(esql.to_s).to eq esql.query
+    end
   end
 
   context 'FROM' do
-    it 'returns a basic quert' do
+    it 'returns a basic query' do
       expect(Elastic::ESQL.from('sample_data').run).to eq 'FROM sample_data'
-    end
-  end
-
-  context 'SORT' do
-    it 'uses regular sort' do
-      expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').run
-      ).to eq 'FROM sample_data | SORT @timestamp'
-    end
-
-    it 'sorts ascending' do
-      expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').ascending.run
-      ).to eq 'FROM sample_data | SORT @timestamp ASC'
-    end
-
-    it 'sorts descending' do
-      expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.run
-      ).to eq 'FROM sample_data | SORT @timestamp DESC'
     end
   end
 end

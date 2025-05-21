@@ -18,27 +18,21 @@
 require 'spec_helper'
 
 describe Elastic::ESQL do
-  context 'KEEP' do
+  context 'ROW' do
     let(:esql) { Elastic::ESQL.new('sample_data') }
 
     it 'accepts 2 strings as a parameter' do
-      esql.keep('column1', 'column2')
-      expect(esql.query).to eq 'FROM sample_data | KEEP column1, column2'
+      esql.row('duration_ms', 'event_duration/10000.0')
+      expect(esql.query).to eq 'FROM sample_data | ROW duration_ms = event_duration/10000.0'
     end
 
-    it 'accepts a string as a parameter' do
-      esql.keep('column1')
-      expect(esql.query).to eq 'FROM sample_data | KEEP column1'
+    it 'accepts a Hash as a parameter' do
+      esql.row({ a: 1, b: 'two', c: 'null' })
+      expect(esql.query).to eq 'FROM sample_data | ROW a = 1, b = two, c = null'
     end
 
-    it 'accepts a string with several columns as a parameter' do
-      esql.keep('column1, column2, column3')
-      expect(esql.query).to eq 'FROM sample_data | KEEP column1, column2, column3'
-    end
-
-    it 'accepts backticks in column names as identifiers' do
-      esql.keep('`1.field`')
-      expect(esql.query).to eq 'FROM sample_data | KEEP `1.field`'
+    it 'raises error if the parameters are wrong' do
+      expect { esql.row('duration_ms', 'event_duration', 1000) }.to raise_error ArgumentError
     end
   end
 end

@@ -18,27 +18,27 @@
 require 'spec_helper'
 
 describe Elastic::ESQL do
-  context 'KEEP' do
+  context 'DROP' do
     let(:esql) { Elastic::ESQL.new('sample_data') }
 
     it 'accepts 2 strings as a parameter' do
-      esql.keep('column1', 'column2')
-      expect(esql.query).to eq 'FROM sample_data | KEEP column1, column2'
+      esql.drop('column1', 'column2')
+      expect(esql.query).to eq 'FROM sample_data | DROP column1, column2'
     end
 
     it 'accepts a string as a parameter' do
-      esql.keep('column1')
-      expect(esql.query).to eq 'FROM sample_data | KEEP column1'
+      esql.drop('column1')
+      expect(esql.query).to eq 'FROM sample_data | DROP column1'
     end
 
     it 'accepts a string with several columns as a parameter' do
-      esql.keep('column1, column2, column3')
-      expect(esql.query).to eq 'FROM sample_data | KEEP column1, column2, column3'
+      esql.drop('column1, column2, column3')
+      expect(esql.query).to eq 'FROM sample_data | DROP column1, column2, column3'
     end
 
     it 'accepts backticks in column names as identifiers' do
-      esql.keep('`1.field`')
-      expect(esql.query).to eq 'FROM sample_data | KEEP `1.field`'
+      esql.drop('`1.field`')
+      expect(esql.query).to eq 'FROM sample_data | DROP `1.field`'
     end
   end
 end

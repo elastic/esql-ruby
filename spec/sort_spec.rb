@@ -1,0 +1,80 @@
+# Licensed to Elasticsearch B.V. under one or more contributor
+# license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright
+# ownership. Elasticsearch B.V. licenses this file to you under
+# the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+require 'spec_helper'
+
+describe Elastic::ESQL do
+  context 'SORT' do
+    it 'uses regular sort' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').run
+      ).to eq 'FROM sample_data | SORT @timestamp'
+    end
+
+    it 'sorts ascending' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').ascending.run
+      ).to eq 'FROM sample_data | SORT @timestamp ASC'
+    end
+
+    it 'sorts descending' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.run
+      ).to eq 'FROM sample_data | SORT @timestamp DESC'
+    end
+
+    it 'uses null last' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_last.run
+      ).to eq 'FROM sample_data | SORT @timestamp DESC NULLS LAST'
+    end
+
+    it 'uses null first' do
+      expect(
+        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.run
+      ).to eq 'FROM sample_data | SORT @timestamp DESC NULLS FIRST'
+    end
+
+    context 'Errors' do
+      it 'raises an error when using asc without sorting' do
+        expect {
+          Elastic::ESQL.from('sample_data').ascending
+        }.to raise_error ArgumentError
+      end
+
+      it 'raises an error when using desc without sorting' do
+        expect {
+          Elastic::ESQL.from('sample_data').descending
+        }.to raise_error ArgumentError
+      end
+    end
+
+    context 'Aliases' do
+      it 'uses asc alias' do
+        expect(
+          Elastic::ESQL.from('sample_data').sort('@timestamp').asc.run
+        ).to eq 'FROM sample_data | SORT @timestamp ASC'
+      end
+
+      it 'uses desc alias' do
+        expect(
+          Elastic::ESQL.from('sample_data').sort('@timestamp').desc.run
+        ).to eq 'FROM sample_data | SORT @timestamp DESC'
+      end
+    end
+  end
+end
