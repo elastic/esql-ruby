@@ -77,6 +77,8 @@ module Elastic
       # Make sure we use a symbol for the key
       @query[symbolize(name)] = if params.size == 1 && params[0].is_a?(Hash)
                                   params[0].map { |k, v| "#{k} = #{v}" }.join(', ')
+                                elsif params.size == 1 && params[0].is_a?(String)
+                                  params[0]
                                 elsif params.size == 2 && params[0].is_a?(String) && params[1].is_a?(String)
                                   "#{params[0]} = #{params[1]}"
                                 else

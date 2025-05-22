@@ -31,6 +31,11 @@ describe Elastic::ESQL do
       expect(esql.query).to eq 'FROM sample_data | EVAL height_feet = height * 3.281, height_cm = height * 100'
     end
 
+    it 'accepts a String as a parameter' do
+      esql.eval('event_duration/1000000.0')
+      expect(esql.to_s).to eq 'FROM sample_data | EVAL event_duration/1000000.0'
+    end
+
     it 'raises error if the parameters are wrong' do
       expect { esql.eval('duration_ms', 'event_duration', 1000) }.to raise_error ArgumentError
     end
