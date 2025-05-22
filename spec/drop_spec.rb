@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'DROP' do
-    let(:esql) { Elastic::ESQL.new('sample_data') }
+    let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts 2 strings as a parameter' do
       esql.drop('column1', 'column2')

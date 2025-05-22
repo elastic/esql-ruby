@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'EVAL' do
-    let(:esql) { Elastic::ESQL.new('sample_data') }
+    let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts 2 strings as a parameter' do
       esql.eval('duration_ms', 'event_duration/10000.0')

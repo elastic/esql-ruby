@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'DISSECT' do
-    let(:esql) { Elastic::ESQL.new('sample_data') }
+    let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts input and pattern as parameters' do
       esql.dissect('a', '%{date} - %{msg} - %{ip}')

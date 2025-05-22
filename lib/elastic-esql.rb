@@ -40,14 +40,27 @@ module Elastic
     include Row
     include Sort
     include Where
+    SOURCE_COMMANDS = [:from, :row, :show]
 
-    def initialize(from)
-      @query = { from: from }
+    def initialize
+      @query = {}
+    end
+
+    def query
+      raise ArgumentError, 'No source command found' unless source_command_present?
+
+      @query.map do |k, v|
+        "#{k.upcase} #{v}"
+      end.join(' | ')
     end
 
     # Class method to allow instantiating with Elastic::ESQL.from('sample_data')
     def self.from(from)
-      new(from)
+      new.from(from)
+    end
+
+    def self.row(*params)
+      new.row(*params)
     end
 
     # Instance method to allow to update from with esql.from('something_else')
@@ -56,10 +69,10 @@ module Elastic
       self
     end
 
-    def query
-      @query.map do |k, v|
-        "#{k.upcase} #{v}"
-      end.join(' | ')
+    def source_command_present?
+      SOURCE_COMMANDS.map { |c| @query.each_key { |k| return true if k == c } }
+
+      false
     end
 
     def to_s
@@ -73,6 +86,7 @@ module Elastic
     # Function for eval, row, and other functions that have one or more columns with values specified
     # as parameters. The hash_or_string function is called with the caller name since it's the same
     # logic to use these parameters.
+    # TODO: Refactor to accept other types when not a Hash
     def hash_or_string(name, params)
       # Make sure we use a symbol for the key
       @query[symbolize(name)] = if params.size == 1 && params[0].is_a?(Hash)

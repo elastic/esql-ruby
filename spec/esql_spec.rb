@@ -19,7 +19,8 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'when initializing' do
-    let(:esql) { Elastic::ESQL.new('sample_data') }
+    let(:esql) { Elastic::ESQL.from('sample_data') }
+
     it 'shows the expected queries' do
       expect(esql.run).to eq 'FROM sample_data'
     end
@@ -49,10 +50,17 @@ describe Elastic::ESQL do
       expect("#{esql}").to eq esql.query
       expect(esql.to_s).to eq esql.query
     end
-  end
 
-  context 'FROM' do
-    it 'returns a basic query' do
+    it 'allows instantiation of empty ESQL' do
+      expect(Elastic::ESQL.new.class).to eq Elastic::ESQL
+    end
+
+    it 'raises error if no source command specified' do
+      esql = Elastic::ESQL.new
+      expect { esql.query }.to raise_error ArgumentError
+    end
+
+    it 'instantiates with from' do
       expect(Elastic::ESQL.from('sample_data').run).to eq 'FROM sample_data'
     end
   end

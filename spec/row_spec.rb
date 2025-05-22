@@ -19,11 +19,11 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'ROW' do
-    let(:esql) { Elastic::ESQL.new('sample_data') }
+    let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts 2 strings as a parameter' do
-      esql.row('duration_ms', 'event_duration/10000.0')
-      expect(esql.query).to eq 'FROM sample_data | ROW duration_ms = event_duration/10000.0'
+      esql.row('a', '10000.0')
+      expect(esql.query).to eq 'FROM sample_data | ROW a = 10000.0'
     end
 
     it 'accepts a Hash as a parameter' do
@@ -33,6 +33,20 @@ describe Elastic::ESQL do
 
     it 'raises error if the parameters are wrong' do
       expect { esql.row('duration_ms', 'event_duration', 1000) }.to raise_error ArgumentError
+    end
+
+    context 'instantiation' do
+      it 'accepts 2 strings as a parameter' do
+        expect(
+          Elastic::ESQL.row('a', '10000.0').run
+        ).to eq 'ROW a = 10000.0'
+      end
+
+      it 'accepts a Hash as a parameter' do
+        expect(
+          Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' }).run
+        ).to eq 'ROW a = 1, b = two, c = null'
+      end
     end
   end
 end
