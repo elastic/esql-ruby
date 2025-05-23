@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'change_point'
 require_relative 'dissect'
 require_relative 'drop'
 require_relative 'eval'
@@ -31,6 +32,7 @@ module Elastic
   # Elastic::ESQL.from('sample_data').sort_descending('@timestamp').limit(3)
   # FORM 'sample_data' | SORT @timestamp desc | LIMIT 3
   class ESQL
+    include ChangePoint
     include Dissect
     include Drop
     include Eval
