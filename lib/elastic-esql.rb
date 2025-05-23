@@ -23,6 +23,7 @@ require_relative 'limit'
 require_relative 'keep'
 require_relative 'rename'
 require_relative 'row'
+require_relative 'show'
 require_relative 'sort'
 require_relative 'where'
 
@@ -38,6 +39,7 @@ module Elastic
     include Limit
     include Rename
     include Row
+    include Show
     include Sort
     include Where
     SOURCE_COMMANDS = [:from, :row, :show]
