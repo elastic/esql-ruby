@@ -73,12 +73,6 @@ module Elastic
       self
     end
 
-    def source_command_present?
-      SOURCE_COMMANDS.map { |c| @query.each_key { |k| return true if k == c } }
-
-      false
-    end
-
     def to_s
       query
     end
@@ -117,6 +111,12 @@ module Elastic
 
     def symbolize(name)
       name.is_a?(Symbol) ? name : name.to_sym
+    end
+
+    def source_command_present?
+      SOURCE_COMMANDS.map { |c| @query.each_key { |k| return true if k == c } }
+
+      false
     end
   end
 end

@@ -29,6 +29,8 @@ module Elastic
       self
     end
 
+    private
+
     def validate_type_name(type_name)
       if TYPE_NAMES.include?(type_name.to_s)
         true
