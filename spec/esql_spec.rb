@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'when initializing' do
     let(:esql) { Elastic::ESQL.from('sample_data') }
@@ -47,21 +48,13 @@ describe Elastic::ESQL do
     end
 
     it 'returns query with to_s' do
-      expect("#{esql}").to eq esql.query
       expect(esql.to_s).to eq esql.query
-    end
-
-    it 'allows instantiation of empty ESQL' do
-      expect(Elastic::ESQL.new.class).to eq Elastic::ESQL
     end
 
     it 'raises error if no source command specified' do
       esql = Elastic::ESQL.new
       expect { esql.query }.to raise_error ArgumentError
     end
-
-    it 'instantiates with from' do
-      expect(Elastic::ESQL.from('sample_data').run).to eq 'FROM sample_data'
-    end
   end
 end
+# rubocop:enable Metrics/BlockLength

@@ -44,7 +44,7 @@ module Elastic
     include Show
     include Sort
     include Where
-    SOURCE_COMMANDS = [:from, :row, :show]
+    SOURCE_COMMANDS = [:from, :row, :show].freeze
 
     def initialize
       @query = {}
@@ -86,7 +86,6 @@ module Elastic
     # logic to use these parameters.
     # TODO: Refactor to accept other types when not a Hash
     def hash_or_string(name, params)
-      # Make sure we use a symbol for the key
       @query[symbolize(name)] = if params.size == 1 && params[0].is_a?(Hash)
                                   params[0].map { |k, v| "#{k} = #{v}" }.join(', ')
                                 elsif params.size == 1 && params[0].is_a?(String)
@@ -94,11 +93,15 @@ module Elastic
                                 elsif params.size == 2 && params[0].is_a?(String) && params[1].is_a?(String)
                                   "#{params[0]} = #{params[1]}"
                                 else
-                                  raise ArgumentError, "#{name.to_s.upcase} needs either a String column name and a String value" \
-                                                       ' or a key value Hash where the keys are the column names and the value ' \
-                                                       'is the function or expression to calculate.'
+                                  raise_hash_or_string_error(name)
                                 end
       self
+    end
+
+    def raise_hash_or_string_error(name)
+      raise ArgumentError, "#{name.to_s.upcase} needs either a String column name and a String value" \
+                           ' or a key value Hash where the keys are the column names and the value ' \
+                           'is the function or expression to calculate.'
     end
 
     def string_or_strings(name, params)

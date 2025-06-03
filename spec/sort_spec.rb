@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'SORT' do
     it 'uses regular sort' do
@@ -51,15 +52,15 @@ describe Elastic::ESQL do
 
     context 'Errors' do
       it 'raises an error when using asc without sorting' do
-        expect {
+        expect do
           Elastic::ESQL.from('sample_data').ascending
-        }.to raise_error ArgumentError
+        end.to raise_error ArgumentError
       end
 
       it 'raises an error when using desc without sorting' do
-        expect {
+        expect do
           Elastic::ESQL.from('sample_data').descending
-        }.to raise_error ArgumentError
+        end.to raise_error ArgumentError
       end
     end
 
@@ -78,3 +79,4 @@ describe Elastic::ESQL do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

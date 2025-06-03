@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'ROW' do
     let(:esql) { Elastic::ESQL.from('sample_data') }
@@ -50,3 +51,4 @@ describe Elastic::ESQL do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

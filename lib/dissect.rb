@@ -20,7 +20,7 @@ module Elastic
   # @see https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok
   module Dissect
     # input - The column that contains the string you want to structure. If the column has multiple
-    # values, DISSECT will process each value. 
+    # values, DISSECT will process each value.
     # pattern - A dissect pattern. If a field name conflicts with an existing column, the existing
     # column is dropped. If a field name is used more than once, only the rightmost duplicate
     # creates a column.
