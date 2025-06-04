@@ -1,0 +1,11 @@
+---
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+Style/FormatStringToken:
+  EnforcedStyle: 'template'
+Style/SymbolArray:
+  EnforcedStyle: brackets
+AllCops:
+  SuggestExtensions: false
