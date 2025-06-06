@@ -36,6 +36,23 @@ Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' }).to_s
 # => "ROW a = 1, b = two, c = null"
 ```
 
+## WHERE
+
+```ruby
+query = Elastic::ESQL.from('sample')
+# => #<Elastic::ESQL:0x000073015ef041f0 @query={from: "sample"}>
+query.where('age > 18')
+#  => #<Elastic::ESQL:0x000073015ef041f0 @query={from: "sample", where: "age > 18"}>
+query.to_s
+# => "FROM sample | WHERE age > 18"
+```
+
+You can chain WHERE commands which will be joined with `AND` as is expected in ES|QL:
+```ruby
+Elastic::ESQL.from('sample').where('first_name == "Juan"').where('last_name == "Perez"').where('age > 18').query
+# => "FROM sample | WHERE first_name == \"Juan\" AND last_name == \"Perez\" AND age > 18"
+```
+
 # Usage with elasticsearch-ruby
 
 You can use the query builder directly with [elasticsearch-ruby](https://github.com/elastic/elasticsearch-ruby) and the `esql.query` API by sending the query object:

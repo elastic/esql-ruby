@@ -30,5 +30,14 @@ describe Elastic::ESQL do
         esql.where('first_name == "Georgi"').query
       ).to eq 'FROM sample_data | WHERE first_name == "Georgi"'
     end
+
+    it 'concatenates WHERE chained methods' do
+      expect(
+        esql
+          .where('first_name == "Juan"')
+          .where('last_name == "Perez"')
+          .where('age > 18').query
+      ).to eq 'FROM sample_data | WHERE first_name == "Juan" AND last_name == "Perez" AND age > 18'
+    end
   end
 end
