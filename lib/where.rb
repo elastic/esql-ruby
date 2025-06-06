@@ -21,7 +21,11 @@ module Elastic
   # against the message column.
   module Where
     def where(where)
-      @query[:where] = where
+      if @query[:where]
+        @query[:where] += " AND #{where}"
+      else
+        @query[:where] = where
+      end
       self
     end
   end
