@@ -55,7 +55,7 @@ You can use the query builder directly with [elasticsearch-ruby](https://github.
 
 ```ruby
 require 'elasticsearch'
-require 'elastic-esql'
+require 'elastic/esql'
 
 client = Elasticsearch::Client.new
 index = 'sample_data'

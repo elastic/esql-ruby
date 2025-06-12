@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
     'source_code_uri' => 'https://github.com/elastic/esql-ruby/tree/main',
     'bug_tracker_uri' => 'https://github.com/elastic/esql-ruby/issues'
   }
-  s.files         = ['lib/elastic-esql.rb']
+  s.files         = ['lib/elastic/esql.rb']
   s.require_paths = ['lib']
   s.required_ruby_version = '>= 3.0'
   s.add_development_dependency 'debug' unless defined?(JRUBY_VERSION)
