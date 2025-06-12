@@ -30,10 +30,7 @@ module Elastic
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/source-commands#esql-row
     #
     def row(params)
-      raise ArgumentError, 'test' unless params.is_a?(Hash)
-
-      @query[:row] = params.map { |k, v| "#{k} = #{v}" }.join(', ')
-      self
+      hash_param(:row, params)
     end
   end
 end

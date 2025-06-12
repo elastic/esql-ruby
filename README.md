@@ -21,11 +21,7 @@ Elastic::ESQL.from('sample_data').limit(2).sort('@timestamp').descending.to_s
 ## EVAL
 
 ```ruby
-esql = Elastic::ESQL.from('sample_data').eval('duration_ms', 'event_duration/10000.0')
-# => #<Elastic::ESQL:0x000077cb530b7548 @query={from: "sample_data", eval: "duration_ms = event_duration/10000.0"}>
-esql.run
-# => "FROM sample_data | EVAL duration_ms = event_duration/10000.0"
-esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' }).to_s
+Elastic::ESQL.from('sample_data').eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' }).to_s
 # => "FROM sample_data | EVAL height_feet = height * 3.281, height_cm = height * 100"
 ```
 

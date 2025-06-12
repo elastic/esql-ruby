@@ -21,11 +21,6 @@ describe Elastic::ESQL do
   context 'RENAME' do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
-    it 'accepts 2 strings as a parameter' do
-      esql.rename('first_name', 'fn')
-      expect(esql.query).to eq 'FROM sample_data | RENAME first_name AS fn'
-    end
-
     it 'accepts a Hash as a parameter' do
       esql.rename({ first_name: 'fn', last_name: 'ln' })
       expect(esql.query).to eq 'FROM sample_data | RENAME first_name AS fn, last_name AS ln'
