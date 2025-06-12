@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'elastic-esql'
+require 'elastic/esql'
