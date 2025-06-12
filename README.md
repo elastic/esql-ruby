@@ -18,21 +18,23 @@ Elastic::ESQL.from('sample_data').limit(2).sort('@timestamp').descending.to_s
 # => "FROM sample_data | LIMIT 2 | SORT @timestamp DESC"
 ```
 
-## EVAL
+## API
+
+### EVAL
 
 ```ruby
 Elastic::ESQL.from('sample_data').eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' }).to_s
 # => "FROM sample_data | EVAL height_feet = height * 3.281, height_cm = height * 100"
 ```
 
-## ROW
+### ROW
 
 ```ruby
 Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' }).to_s
 # => "ROW a = 1, b = two, c = null"
 ```
 
-## WHERE
+### WHERE
 
 ```ruby
 query = Elastic::ESQL.from('sample')
@@ -49,7 +51,7 @@ Elastic::ESQL.from('sample').where('first_name == "Juan"').where('last_name == "
 # => "FROM sample | WHERE first_name == \"Juan\" AND last_name == \"Perez\" AND age > 18"
 ```
 
-# Usage with elasticsearch-ruby
+## Usage with elasticsearch-ruby
 
 You can use the query builder directly with [elasticsearch-ruby](https://github.com/elastic/elasticsearch-ruby) and the `esql.query` API by sending the query object:
 
@@ -76,3 +78,7 @@ require 'elasticsearch/helpers/esql_helper'
 
 Elasticsearch::Helpers::ESQLHelper.query(client, query)
 ```
+
+## License
+
+This software is licensed under the [Apache 2 license](./LICENSE). See [NOTICE](./NOTICE).
