@@ -17,15 +17,9 @@
 
 require 'spec_helper'
 
-# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'ROW' do
     let(:esql) { Elastic::ESQL.from('sample_data') }
-
-    it 'accepts 2 strings as a parameter' do
-      esql.row('a', '10000.0')
-      expect(esql.query).to eq 'FROM sample_data | ROW a = 10000.0'
-    end
 
     it 'accepts a Hash as a parameter' do
       esql.row({ a: 1, b: 'two', c: 'null' })
@@ -37,12 +31,6 @@ describe Elastic::ESQL do
     end
 
     context 'instantiation' do
-      it 'accepts 2 strings as a parameter' do
-        expect(
-          Elastic::ESQL.row('a', '10000.0').run
-        ).to eq 'ROW a = 10000.0'
-      end
-
       it 'accepts a Hash as a parameter' do
         expect(
           Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' }).run
@@ -51,4 +39,3 @@ describe Elastic::ESQL do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
