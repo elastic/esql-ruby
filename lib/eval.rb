@@ -16,17 +16,22 @@
 # under the License.
 
 module Elastic
-  # Mixin to add eval, row, and other functions that have one or more columns with values specified
-  # as parameters. The hash_or_string function is called with the caller name since it's the same
-  # logic to use these parameters.
+  # The EVAL processing command enables you to append new columns with calculated values. EVAL
+  # supports various functions for calculating values. Refer to Functions for more information.
   module Eval
-    # Use the EVAL command to append columns to a table, with calculated values.
-    # esql.eval('duration_ms', 'event_duration/10000.0')
-    # esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' })
-    # TODO: Can the experience be improved?
-    # TODO: Consider array as argument?
-    def eval(*params)
-      hash_or_string(:eval, params)
+    # @param [Hash] params. Receives a Hash<column, value>
+    # @options [String] column name: The column name. In case of duplicate column names, only the
+    #                                rightmost duplicate creates a column.
+    # @options [String] value: The value for the column. Can be a literal, an expression, or a function.
+    #
+    # @example
+    #
+    #   esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' })
+    #
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-eval
+    #
+    def eval(params)
+      hash_param(:eval, params)
     end
   end
 end

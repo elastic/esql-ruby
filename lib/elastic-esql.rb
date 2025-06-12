@@ -85,23 +85,16 @@ module Elastic
     # as parameters. The hash_or_string function is called with the caller name since it's the same
     # logic to use these parameters.
     # TODO: Refactor to accept other types when not a Hash
-    def hash_or_string(name, params)
-      @query[symbolize(name)] = if params.size == 1 && params[0].is_a?(Hash)
-                                  params[0].map { |k, v| "#{k} = #{v}" }.join(', ')
-                                elsif params.size == 1 && params[0].is_a?(String)
-                                  params[0]
-                                elsif params.size == 2 && params[0].is_a?(String) && params[1].is_a?(String)
-                                  "#{params[0]} = #{params[1]}"
-                                else
-                                  raise_hash_or_string_error(name)
-                                end
+    def hash_param(name, params)
+      raise_hash_error(name) unless params.is_a?(Hash)
+
+      @query[symbolize(name)] = params.map { |k, v| "#{k} = #{v}" }.join(', ')
       self
     end
 
-    def raise_hash_or_string_error(name)
-      raise ArgumentError, "#{name.to_s.upcase} needs either a String column name and a String value" \
-                           ' or a key value Hash where the keys are the column names and the value ' \
-                           'is the function or expression to calculate.'
+    def raise_hash_error(name)
+      raise ArgumentError, "#{name.to_s.upcase} needs a Hash as a parameter where the keys are the " \
+                          'column names and the value is the function or expression to calculate.'
     end
 
     def string_or_strings(name, params)
