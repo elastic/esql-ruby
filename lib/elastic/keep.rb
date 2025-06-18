@@ -21,7 +21,7 @@ module Elastic
   #  esql.keep('column1, column2') || esql.keep('column1', 'column2')
   module Keep
     def keep(*params)
-      string_or_strings(:keep, params)
+      @query[:keep] = params.join(', ')
       self
     end
   end

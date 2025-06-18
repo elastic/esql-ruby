@@ -20,7 +20,7 @@ module Elastic
   # columns - A comma-separated list of columns to remove.
   module Drop
     def drop(*params)
-      string_or_strings(:drop, params)
+      @query[:drop] = params.join(', ')
       self
     end
   end
