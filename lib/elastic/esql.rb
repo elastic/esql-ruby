@@ -63,6 +63,10 @@ module Elastic
       new.from(from)
     end
 
+    def self.show
+      new.show
+    end
+
     def self.row(*params)
       new.row(*params)
     end

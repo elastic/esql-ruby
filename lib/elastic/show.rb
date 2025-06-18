@@ -16,7 +16,9 @@
 # under the License.
 
 module Elastic
-  # The ROW source command produces a row with one or more columns with values that you specify.
+  # The SHOW source command returns information about the deployment and its capabilities.
+  # item - Can only be INFO.
+  # Use SHOW INFO to return the deployment’s version, build date and hash.
   module Show
     def show
       'SHOW INFO'
