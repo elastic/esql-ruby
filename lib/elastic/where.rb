@@ -20,6 +20,7 @@ module Elastic
   # TODO: WHERE supports several operators. For example, you can use LIKE to run a wildcard query
   # against the message column.
   module Where
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-where
     def where(where)
       if @query[:where]
         @query[:where] += " AND #{where}"

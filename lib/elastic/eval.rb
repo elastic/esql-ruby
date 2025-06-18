@@ -17,7 +17,8 @@
 
 module Elastic
   # The EVAL processing command enables you to append new columns with calculated values. EVAL
-  # supports various functions for calculating values. Refer to Functions for more information.
+  # supports various functions for calculating values.
+  # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-eval
   module Eval
     # @param [Hash] params. Receives a Hash<column, value>
     # @options [String] column name: The column name. In case of duplicate column names, only the

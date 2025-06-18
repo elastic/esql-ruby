@@ -16,9 +16,10 @@
 # under the License.
 
 module Elastic
-  # Sorting functions to be imported by main class
+  # The SORT processing command sorts a table on one or more columns.
   module Sort
     # @param sort - The column to sort on.
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-sort
     def sort(column)
       @query[:sort] = column
       self

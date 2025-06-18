@@ -21,9 +21,9 @@ module Elastic
   module Grok
     # input - The column that contains the string you want to structure. If the column has multiple
     # values, GROK will process each value.
-    #  pattern - A grok pattern. If a field name conflicts with an existing column, the existing
-    #  column is discarded. If a field name is used more than once, a multi-valued column will be
-    #  created with one value per each occurrence of the field name.
+    # pattern - A grok pattern. If a field name conflicts with an existing column, the existing
+    # column is discarded. If a field name is used more than once, a multi-valued column will be
+    # created with one value per each occurrence of the field name.
     def grok(input, pattern)
       @query[:grok] = "#{input} \"\"\"#{pattern}\"\"\""
       self
