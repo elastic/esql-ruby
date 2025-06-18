@@ -101,14 +101,6 @@ module Elastic
                           'column names and the value is the function or expression to calculate.'
     end
 
-    def string_or_strings(name, params)
-      @query[name] = if params.size > 1
-                       params.join(', ')
-                     else
-                       params[0]
-                     end
-    end
-
     def symbolize(name)
       name.is_a?(Symbol) ? name : name.to_sym
     end
