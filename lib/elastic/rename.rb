@@ -24,6 +24,7 @@ module Elastic
     # rightmost column with the same new name are dropped.
     # esql.rename('first_name', 'fn')
     # esql.rename({ first_name: 'fn', last_name: 'ln' })
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-rename
     def rename(params)
       hash_param(:rename, params)
       @query[:rename] = @query[:rename].gsub('=', 'AS')

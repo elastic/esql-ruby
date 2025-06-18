@@ -19,6 +19,7 @@ module Elastic
   # KEEP enables you to specify what columns are returned and the order in which they are returned.
   # Accepts:
   #  esql.keep('column1, column2') || esql.keep('column1', 'column2')
+  # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-keep
   module Keep
     def keep(*params)
       @query[:keep] = params.join(', ')
