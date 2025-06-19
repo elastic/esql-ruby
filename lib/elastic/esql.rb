@@ -18,6 +18,7 @@
 require_relative 'change_point'
 require_relative 'dissect'
 require_relative 'drop'
+require_relative 'enrich'
 require_relative 'eval'
 require_relative 'grok'
 require_relative 'limit'
@@ -53,9 +54,17 @@ module Elastic
     def query
       raise ArgumentError, 'No source command found' unless source_command_present?
 
+      @query[:enrich] = @enriches.join('| ') if @enriches
       @query.map do |k, v|
         "#{k.upcase} #{v}"
       end.join(' | ')
+    end
+
+    def enrich(policy)
+      @enriches ||= []
+      enrich = Enrich.new(policy, self)
+      @enriches << enrich
+      enrich
     end
 
     # Class method to allow instantiating with Elastic::ESQL.from('sample_data')
