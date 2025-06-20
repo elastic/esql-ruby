@@ -17,9 +17,13 @@
 
 module Elastic
   # The DROP processing command removes one or more columns.
-  # columns - A comma-separated list of columns to remove.
-  # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-drop
   module Drop
+    # @param [Array<String>|String] columns A comma-separated list of columns to remove.
+    # @example
+    #   esql.drop('column1', 'column2')
+    #   esql.drop('column1')
+    #   esql.drop('column1, column2, column3')
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-drop
     def drop(*params)
       @query[:drop] = params.join(', ')
       self

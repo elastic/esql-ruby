@@ -19,11 +19,16 @@ module Elastic
   # ENRICH enables you to add data from existing indices as new columns using an enrich policy.
   # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-enrich
   class Enrich
+    # Once you call +enrich+ on an +Elastic::ESQL+ object, you can chain +on+ and +with+ to it.
     # @param [String] policy - The name of the enrich policy. You need to create and execute the enrich policy first.
     #
     # @example
     #
+    #   esql = Elastic::ESQL.from('sample_data')
     #   esql.enrich('policy')
+    #
+    # @example
+    #   esql.enrich('policy').on('a').with({ name: 'language_name' })
     #
     def initialize(policy, esql)
       @policy = policy

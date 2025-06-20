@@ -18,12 +18,17 @@
 module Elastic
   # The RENAME processing command renames one or more columns.
   module Rename
-    # old_nameX - The name of a column you want to rename.
-    # new_nameX - The new name of the column. If it conflicts with an existing column name, the
-    # existing column is dropped. If multiple columns are renamed to the same name, all but the
-    # rightmost column with the same new name are dropped.
-    # esql.rename('first_name', 'fn')
-    # esql.rename({ first_name: 'fn', last_name: 'ln' })
+    # @param [Hash<Symbol, String>] params Hash with key, values to rename
+    # @option params [Symbol] :old_nameX The name of a column you want to rename.
+    # @option params [String] new_nameX The new name of the column. If it conflicts with an existing
+    #                         column name, the existing column is dropped. If multiple columns are
+    #                         renamed to the same name, all but the rightmost column with the same
+    #                         new name are dropped.
+    # @param [String] old_nameX The name of a column you want to rename.
+    # @param [String] new_nameX The new name of the column you want to rename.
+    # @example
+    #   esql.rename('first_name', 'fn')
+    #   esql.rename({ first_name: 'fn', last_name: 'ln' })
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-rename
     def rename(params)
       hash_param(:rename, params)

@@ -19,13 +19,14 @@ module Elastic
   # The ROW source command produces a row with one or more columns with values that you specify.
   module Row
     # @param [Hash] params. Receives a Hash<column, value>
-    # @options [String] column name: The column name. In case of duplicate column names, only the
+    # @option params [String] column_name The column name. In case of duplicate column names, only the
     #                                rightmost duplicate creates a column.
-    # @options [String] value: The value for the column. Can be a literal, an expression, or a function.
+    # @option params [String] value The value for the column. Can be a literal, an expression, or a function.
     #
     # @example
     #
-    #   query.from('sample').row({ a: 1, b: 'two', c: nil })
+    #   query.row({ a: 1, b: 'two', c: 'null' })
+    #   query = Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' })
     #
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/source-commands#esql-row
     #

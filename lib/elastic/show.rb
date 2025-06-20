@@ -17,9 +17,10 @@
 
 module Elastic
   # The SHOW source command returns information about the deployment and its capabilities.
-  # item - Can only be INFO.
   # Use SHOW INFO to return the deployment’s version, build date and hash.
   module Show
+    # @return [String] 'SHOW INFO'
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/source-commands#esql-show
     def show
       'SHOW INFO'
     end

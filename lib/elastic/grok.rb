@@ -17,13 +17,16 @@
 
 module Elastic
   # GROK enables you to extract structured data out of a string.
-  # @see https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok
   module Grok
-    # input - The column that contains the string you want to structure. If the column has multiple
-    # values, GROK will process each value.
-    # pattern - A grok pattern. If a field name conflicts with an existing column, the existing
-    # column is discarded. If a field name is used more than once, a multi-valued column will be
-    # created with one value per each occurrence of the field name.
+    # @param [String] input The column that contains the string you want to structure. If the column
+    #                 has multiple values, GROK will process each value.
+    # @param [String] pattern A grok pattern. If a field name conflicts with an existing column, the
+    #                 existing column is discarded. If a field name is used more than once, a
+    #                 multi-valued column will be created with one value per each occurrence of the
+    #                 field name.
+    # @example
+    #   esql.grok('a', '%{date} - %{msg} - %{ip}')
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok
     def grok(input, pattern)
       @query[:grok] = "#{input} \"\"\"#{pattern}\"\"\""
       self

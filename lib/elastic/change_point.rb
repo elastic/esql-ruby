@@ -17,8 +17,21 @@
 
 module Elastic
   TYPE_NAMES = %w[dip distribution_change spike step_change trend_change].freeze
-  # The ROW source command produces a row with one or more columns with values that you specify.
+  # CHANGE_POINT detects spikes, dips, and change points in a metric.
   module ChangePoint
+    # @param [String] value The column with the metric in which you want to detect a change point.
+    # @param [String] :key The column with the key to order the values by. If not specified,
+    #                 @timestamp is used.
+    # @param [String] :type_name The name of the output column with the change point type. If not
+    #                 specified, type is used.
+    # @param [String] :pvalue_name The name of the output column with the p-value that indicates
+    #                 how extreme the change point is. If not specified, pvalue is used.
+    # @example
+    #   esql.change_point('my_column')
+    #   esql.change_point('my_column', key: 'my_key')
+    #   esql.change_point('my_column', key: 'my_key', type_name: 'spike', pvalue_name: 'pvalue')
+    #
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-change_point
     def change_point(column, key: nil, type_name: nil, pvalue_name: nil)
       query = column
       query += " ON #{key}" unless key.nil?

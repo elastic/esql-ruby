@@ -20,10 +20,10 @@ module Elastic
   # supports various functions for calculating values.
   # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-eval
   module Eval
-    # @param [Hash] params. Receives a Hash<column, value>
-    # @options [String] column name: The column name. In case of duplicate column names, only the
-    #                                rightmost duplicate creates a column.
-    # @options [String] value: The value for the column. Can be a literal, an expression, or a function.
+    # @param [Hash] params Receives a Hash<Symbol, String>
+    # @option params [Symbol] column_name The column name. In case of duplicate column names, only the
+    #                              rightmost duplicate creates a column.
+    # @option params [String] value The value for the column. Can be a literal, an expression, or a function.
     #
     # @example
     #

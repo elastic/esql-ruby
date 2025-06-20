@@ -17,10 +17,11 @@
 
 module Elastic
   # Limit the number of rows that are returned, up to a maximum of 10,000 rows
-  # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-limit
   module Limit
-    def limit(limit)
-      @query[:limit] = limit
+    # @param [Integer] max_number_of_rows The maximum number of rows to return.
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-limit
+    def limit(max_number_of_rows)
+      @query[:limit] = max_number_of_rows
       self
     end
   end
