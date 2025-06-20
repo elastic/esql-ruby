@@ -29,8 +29,9 @@ Gem::Specification.new do |s|
   s.files         = ['lib/elastic/esql.rb']
   s.require_paths = ['lib']
   s.required_ruby_version = '>= 3.0'
-  s.add_development_dependency 'debug' unless defined?(JRUBY_VERSION)
+  s.add_development_dependency 'debug', '~> 1' unless defined?(JRUBY_VERSION)
   s.add_development_dependency 'rake', '~> 13'
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rubocop', '~> 1.75'
+  s.add_development_dependency 'yard', '~> 0.9'
 end
