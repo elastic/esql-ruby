@@ -68,6 +68,21 @@ query.drop('column1', 'column2').to_s
 # => 'FROM sample_data | DROP column1, column2'
 ```
 
+### ENRICH
+
+[ENRICH](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-enrich) enables you to add data from existing indices as new columns using an enrich policy.
+
+```ruby
+esql = Elastic::ESQL.from('sample_data')
+esql.enrich('policy')
+```
+
+Once you call `enrich` on an `Elastic::ESQL` object, you can chain `on` and `with` to it.
+
+```ruby
+esql.enrich('policy').on('a').with({ name: 'language_name' })
+```
+
 ### EVAL
 
 The [EVAL](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-eval) processing command enables you to append new columns with calculated values. EVAL supports various functions for calculating values.
