@@ -19,13 +19,18 @@ module Elastic
   # DISSECT enables you to extract structured data out of a string.
   # @see https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok
   module Dissect
-    # input - The column that contains the string you want to structure. If the column has multiple
-    # values, DISSECT will process each value.
-    # pattern - A dissect pattern. If a field name conflicts with an existing column, the existing
-    # column is dropped. If a field name is used more than once, only the rightmost duplicate
-    # creates a column.
-    # <separator> - A string used as the separator between appended values, when using the append
-    # modifier.
+    # @param [String] input The column that contains the string you want to structure. If the column has multiple
+    #                 values, DISSECT will process each value.
+    # @param [String] pattern A dissect pattern. If a field name conflicts with an existing column,
+    #                 the existing column is dropped. If a field name is used more than once, only
+    #                 the right most duplicate creates a column.
+    # @param [String] separator A string used as the separator between appended values, when using
+    #                 the append modifier.
+    # @example
+    #   esql.dissect('a', '%{date} - %{msg} - %{ip}')
+    #   esql.dissect('a', '%{date} - %{msg} - %{ip}', ',')
+    #
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-dissect
     def dissect(input, pattern, separator = nil)
       query = "#{input} \"\"\"#{pattern}\"\"\""
       query.concat " APPEND_SEPARATOR=\"#{separator}\"" if separator
