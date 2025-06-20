@@ -20,6 +20,8 @@ Elastic::ESQL.from('sample_data').limit(2).sort('@timestamp').descending.to_s
 
 ## API
 
+Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`.
+
 ### Source Commands (FROM, ROW, SHOW)
 
 An ES|QL query must start with a source command:

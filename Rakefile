@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'yard'
+
 desc 'Open an irb session preloaded with this library'
 task :console do
   sh 'irb -r rubygems -I lib -r elastic/esql.rb'
@@ -23,4 +25,8 @@ end
 desc 'Run unit tests'
 task :test do
   sh 'bundle exec rspec'
+end
+
+YARD::Rake::YardocTask.new do |t|
+  t.files = ['lib/**/*.rb']
 end
