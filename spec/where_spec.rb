@@ -22,7 +22,7 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'uses WHERE' do
-      expect(esql.where('name LIKE "Something"').run).to eq 'FROM sample_data | WHERE name LIKE "Something"'
+      expect(esql.where('name LIKE "Something"').to_s).to eq 'FROM sample_data | WHERE name LIKE "Something"'
     end
 
     it 'escapes double quotes for String literals' do

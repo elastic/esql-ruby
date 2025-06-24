@@ -23,15 +23,15 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'shows the expected queries' do
-      expect(esql.run).to eq 'FROM sample_data'
+      expect(esql.to_s).to eq 'FROM sample_data'
     end
 
     it 'allows to change FROM' do
-      expect(esql.from('something_else').run).to eq 'FROM something_else'
+      expect(esql.from('something_else').query).to eq 'FROM something_else'
     end
 
     it 'uses limit' do
-      expect(esql.limit(2).run).to eq 'FROM sample_data | LIMIT 2'
+      expect(esql.limit(2).to_s).to eq 'FROM sample_data | LIMIT 2'
     end
 
     it 'returns the full query' do
