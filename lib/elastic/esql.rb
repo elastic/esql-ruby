@@ -91,7 +91,7 @@ module Elastic
     end
 
     # Class method to allow static instantiation.
-    # @param [Hash] params. Receives a Hash<column, value>
+    # @param [Hash] params Receives a Hash<column, value>
     # @option params [String] column_name The column name. In case of duplicate column names, only the
     #                                rightmost duplicate creates a column.
     # @option params [String] value The value for the column. Can be a literal, an expression, or a function.
