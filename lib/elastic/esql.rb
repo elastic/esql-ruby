@@ -112,8 +112,6 @@ module Elastic
       query
     end
 
-    alias run query
-
     private
 
     # Function for eval, row, and other functions that have one or more columns with values specified

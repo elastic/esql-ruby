@@ -33,7 +33,7 @@ describe Elastic::ESQL do
     context 'instantiation' do
       it 'accepts a Hash as a parameter' do
         expect(
-          Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' }).run
+          Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' }).to_s
         ).to eq 'ROW a = 1, b = two, c = null'
       end
     end

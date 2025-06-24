@@ -22,31 +22,31 @@ describe Elastic::ESQL do
   context 'SORT' do
     it 'uses regular sort' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').run
+        Elastic::ESQL.from('sample_data').sort('@timestamp').to_s
       ).to eq 'FROM sample_data | SORT @timestamp'
     end
 
     it 'sorts ascending' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').ascending.run
+        Elastic::ESQL.from('sample_data').sort('@timestamp').ascending.to_s
       ).to eq 'FROM sample_data | SORT @timestamp ASC'
     end
 
     it 'sorts descending' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.run
+        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.to_s
       ).to eq 'FROM sample_data | SORT @timestamp DESC'
     end
 
     it 'uses null last' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_last.run
+        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_last.to_s
       ).to eq 'FROM sample_data | SORT @timestamp DESC NULLS LAST'
     end
 
     it 'uses null first' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.run
+        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.to_s
       ).to eq 'FROM sample_data | SORT @timestamp DESC NULLS FIRST'
     end
 
@@ -67,13 +67,13 @@ describe Elastic::ESQL do
     context 'Aliases' do
       it 'uses asc alias' do
         expect(
-          Elastic::ESQL.from('sample_data').sort('@timestamp').asc.run
+          Elastic::ESQL.from('sample_data').sort('@timestamp').asc.to_s
         ).to eq 'FROM sample_data | SORT @timestamp ASC'
       end
 
       it 'uses desc alias' do
         expect(
-          Elastic::ESQL.from('sample_data').sort('@timestamp').desc.run
+          Elastic::ESQL.from('sample_data').sort('@timestamp').desc.to_s
         ).to eq 'FROM sample_data | SORT @timestamp DESC'
       end
     end
