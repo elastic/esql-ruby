@@ -16,6 +16,7 @@
 # under the License.
 
 require_relative 'change_point'
+require_relative 'custom'
 require_relative 'dissect'
 require_relative 'drop'
 require_relative 'enrich'
@@ -35,6 +36,7 @@ module Elastic
   #    # => FROM 'sample_data' | SORT @timestamp desc | LIMIT 3
   class ESQL
     include ChangePoint
+    include Custom
     include Dissect
     include Drop
     include Eval
@@ -50,6 +52,7 @@ module Elastic
 
     def initialize
       @query = {}
+      @custom = []
     end
 
     # Function to build the ES|QL formatted query and return it as a String.
@@ -59,9 +62,12 @@ module Elastic
       raise ArgumentError, 'No source command found' unless source_command_present?
 
       @query[:enrich] = @enriches.join('| ') if @enriches
-      @query.map do |k, v|
+      string_query = @query.map do |k, v|
         "#{k.upcase} #{v}"
       end.join(' | ')
+
+      string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
+      string_query
     end
 
     # Creates a new Enrich object to chain with +on+ and +with+. If other methods are chained to the
