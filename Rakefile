@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'bundler/gem_tasks'
 require 'yard'
 
 desc 'Open an irb session preloaded with this library'
