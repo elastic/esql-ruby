@@ -20,7 +20,7 @@ Elastic::ESQL.from('sample_data').limit(2).sort('@timestamp').descending.to_s
 
 ## API
 
-Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`.
+📜 Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`.
 
 ### Source Commands (FROM, ROW, SHOW)
 
@@ -163,6 +163,23 @@ You can chain WHERE commands which will be joined with `AND` as is expected in E
 ```ruby
 Elastic::ESQL.from('sample').where('first_name == "Juan"').where('last_name == "Perez"').where('age > 18').query
 # => "FROM sample | WHERE first_name == \"Juan\" AND last_name == \"Perez\" AND age > 18"
+```
+
+### Custom Strings
+
+You can use the `custom` function to add custom Strings to the query. This will concatenate the strings at the end of the query. It will add them as they're sent to the function, without adding any pipe characters. They'll be joined to the rest of the query by a space character.
+
+```ruby
+esql = Elastic::ESQL.from('sample_data')
+esql.custom('| MY_VALUE = "test value"').to_s
+# => 'FROM sample_data | MY_VALUE = "test value"'
+```
+
+Chaining `custom` functions:
+
+```ruby
+esql.custom('| MY_VALUE = "test value"').custom('| ANOTHER, VALUE')
+'FROM sample_data | MY_VALUE = "test value" | ANOTHER, VALUE'
 ```
 
 ## Usage with elasticsearch-ruby
