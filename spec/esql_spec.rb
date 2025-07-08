@@ -30,8 +30,15 @@ describe Elastic::ESQL do
       expect(esql.from('something_else').query).to eq 'FROM something_else'
     end
 
-    it 'uses limit' do
-      expect(esql.limit(2).to_s).to eq 'FROM sample_data | LIMIT 2'
+    it 'uses limit!' do
+      expect(esql.limit!(2).to_s).to eq 'FROM sample_data | LIMIT 2'
+    end
+
+    it 'uses limit without changing' do
+      expect(esql.limit(4).to_s).to eq 'FROM sample_data | LIMIT 4'
+      expect(esql.to_s).to eq 'FROM sample_data'
+      esql.limit!(2)
+      expect(esql.to_s).to eq 'FROM sample_data | LIMIT 2'
     end
 
     it 'returns the full query' do
@@ -41,7 +48,7 @@ describe Elastic::ESQL do
     end
 
     it 'saves query data and returns with .query' do
-      esql.sort('@timestamp').ascending.limit(2).where('value > 10')
+      esql.sort!('@timestamp').ascending!.limit!(2).where!('value > 10')
       expect(
         esql.query
       ).to eq 'FROM sample_data | SORT @timestamp ASC | LIMIT 2 | WHERE value > 10'

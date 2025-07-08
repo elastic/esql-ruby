@@ -76,6 +76,29 @@ describe Elastic::ESQL do
           Elastic::ESQL.from('sample_data').sort('@timestamp').desc.to_s
         ).to eq 'FROM sample_data | SORT @timestamp DESC'
       end
+
+      it 'mutates with desc!' do
+        esql = Elastic::ESQL.from('sample_data')
+        esql.sort!('@timestamp').desc!
+        expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp DESC'
+      end
+
+      it 'mutates with asc!' do
+        esql = Elastic::ESQL.from('sample_data')
+        esql.sort!('@timestamp').asc!
+        expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp ASC'
+      end
+    end
+
+    context 'mutating the object' do
+      let(:esql) { Elastic::ESQL.from('sample_data') }
+      it 'changes the object when using !' do
+        esql.sort!('@timestamp').descending!
+        expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp DESC'
+
+        esql.nulls_first!
+        expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp DESC NULLS FIRST'
+      end
     end
   end
 end

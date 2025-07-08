@@ -31,8 +31,12 @@ module Elastic
     #
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-eval
     #
-    def eval(params)
+    def eval!(params)
       hash_param(:eval, params)
+    end
+
+    def eval(params)
+      method_copy(:eval, params)
     end
   end
 end

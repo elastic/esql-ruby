@@ -22,8 +22,15 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts a Hash as a parameter' do
-      esql.rename({ first_name: 'fn', last_name: 'ln' })
+      esql.rename!({ first_name: 'fn', last_name: 'ln' })
       expect(esql.query).to eq 'FROM sample_data | RENAME first_name AS fn, last_name AS ln'
+    end
+
+    it 'does not mutate the object' do
+      expect(
+        esql.rename({ first_name: 'fn', last_name: 'ln' }).to_s
+      ).to eq 'FROM sample_data | RENAME first_name AS fn, last_name AS ln'
+      expect(esql.query).to eq 'FROM sample_data'
     end
   end
 end

@@ -20,9 +20,13 @@ module Elastic
   module Limit
     # @param [Integer] max_number_of_rows The maximum number of rows to return.
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-limit
-    def limit(max_number_of_rows)
+    def limit!(max_number_of_rows)
       @query[:limit] = max_number_of_rows
       self
+    end
+
+    def limit(max_number_of_rows)
+      method_copy(:limit, max_number_of_rows)
     end
   end
 end

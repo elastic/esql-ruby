@@ -25,13 +25,17 @@ module Elastic
     #   esql.where('name LIKE "Something"')
     #
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-where
-    def where(expression)
+    def where!(expression)
       if @query[:where]
         @query[:where] += " AND #{expression}"
       else
         @query[:where] = expression
       end
       self
+    end
+
+    def where(expression)
+      method_copy(:where, expression)
     end
   end
 end

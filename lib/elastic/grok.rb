@@ -27,9 +27,13 @@ module Elastic
     # @example
     #   esql.grok('a', '%{date} - %{msg} - %{ip}')
     # @see https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok
-    def grok(input, pattern)
+    def grok!(input, pattern)
       @query[:grok] = "#{input} \"\"\"#{pattern}\"\"\""
       self
+    end
+
+    def grok(input, pattern)
+      method_copy(:grok, input, pattern)
     end
   end
 end
