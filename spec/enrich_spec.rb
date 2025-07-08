@@ -53,7 +53,7 @@ describe Elastic::ESQL do
     end
 
     it 'works fine when continuing chainging' do
-      esql.enrich('policy').sort('@timestamp')
+      esql.enrich('policy').sort!('@timestamp')
       expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp | ENRICH policy'
     end
   end

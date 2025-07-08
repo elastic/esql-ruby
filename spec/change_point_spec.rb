@@ -22,18 +22,26 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts just column' do
-      esql.change_point('my_column')
+      esql.change_point!('my_column')
       expect(esql.query).to eq 'FROM sample_data | CHANGE_POINT my_column'
     end
 
     it 'accepts key' do
-      esql.change_point('my_column', key: 'my_key')
+      esql.change_point!('my_column', key: 'my_key')
       expect(esql.query).to eq 'FROM sample_data | CHANGE_POINT my_column ON my_key'
     end
 
     it 'accepts key, type name and pvalue' do
-      esql.change_point('my_column', key: 'my_key', type_name: 'spike', pvalue_name: 'pvalue')
+      esql.change_point!('my_column', key: 'my_key', type_name: 'spike', pvalue_name: 'pvalue')
       expect(esql.query).to eq 'FROM sample_data | CHANGE_POINT my_column ON my_key AS spike, pvalue'
+    end
+
+    it 'does not change the object when using change_point' do
+      esql.change_point('my_column', key: 'my_key', type_name: 'spike', pvalue_name: 'pvalue')
+      expect(
+        esql.change_point('my_column', key: 'my_key', type_name: 'spike', pvalue_name: 'pvalue').object_id
+      ).not_to eq esql.object_id
+      expect(esql.query).to eq 'FROM sample_data'
     end
   end
 end

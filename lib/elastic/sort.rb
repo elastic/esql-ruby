@@ -20,36 +20,58 @@ module Elastic
   module Sort
     # @param sort - The column to sort on.
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-sort
-    def sort(column)
+    def sort!(column)
       @query[:sort] = column
       self
     end
 
     # Sorts ascending, adds ASC to the sort function
-    def ascending
+    def ascending!
       sorting('ASC')
     end
 
     # Sorts descending, adds DESC to the sort function
-    def descending
+    def descending!
       sorting('DESC')
     end
 
     # Sort null values first using NULLS FIRST
     # By default, null values are treated as being larger than any other value.
     #
-    def nulls_first
+    def nulls_first!
       sorting('NULLS FIRST')
     end
 
     # Sort null values last using NULLS LAST
     #
-    def nulls_last
+    def nulls_last!
       sorting('NULLS LAST')
+    end
+
+    def sort(column)
+      method_copy(:sort, column)
+    end
+
+    def ascending
+      method_copy(:ascending)
+    end
+
+    def descending
+      method_copy(:descending)
+    end
+
+    def nulls_first
+      method_copy(:nulls_first)
+    end
+
+    def nulls_last
+      method_copy(:nulls_last)
     end
 
     alias asc ascending
     alias desc descending
+    alias asc! ascending!
+    alias desc! descending!
 
     private
 

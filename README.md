@@ -5,10 +5,17 @@ This gem allows you to build [ES|QL](https://www.elastic.co/docs/explore-analyze
 > [!IMPORTANT]
 > This library is in active development and the final API hasn't been completed yet. If you have any feedback on the current API or general usage, please don't hesitate to [open a new issue](https://github.com/elastic/esql-ruby/issues).
 
-You can instantiate a query with any [source command](https://www.elastic.co/docs/reference/query-languages/esql/esql-commands#esql-source-commands), like `from`, `row` or `show`:
+You can instantiate a query with a [source command](https://www.elastic.co/docs/reference/query-languages/esql/esql-commands#esql-source-commands), like `from` or `row`:
 
 ```ruby
 Elastic::ESQL.from('sample')
+```
+
+The `show` command will always return the String `'SHOW INFO'`:
+
+```ruby
+Elastic::ESQL.show
+# => "SHOW INFO"
 ```
 
 Build the query by chaining ES|QL methods. You can see the generated query with `.to_s`:
@@ -16,6 +23,17 @@ Build the query by chaining ES|QL methods. You can see the generated query with 
 ```ruby
 Elastic::ESQL.from('sample_data').limit(2).sort('@timestamp').descending.to_s
 # => "FROM sample_data | LIMIT 2 | SORT @timestamp DESC"
+```
+
+To mutate an instantiated query object, you can use the `!` equivalents of each function:
+
+```ruby
+query = Elastic::ESQL.from('sample_data')
+query.to_s
+# => "FROM sample_data"
+query.limit!(2).sort!('@timestamp')
+query.to_s
+# => "FROM sample_data | LIMIT 2 | SORT @timestamp"
 ```
 
 ## API
@@ -48,14 +66,14 @@ While `row` and `from` can be chained with other functions to build a complex qu
 
 ```ruby
 query = Elastic::ESQL.from('sample_data')
-query.dissect('a', '%{date} - %{msg} - %{ip}').to_s
+query.dissect!('a', '%{date} - %{msg} - %{ip}').to_s
 # => 'FROM sample_data | DISSECT a """%{date} - %{msg} - %{ip}"""'
 ```
 
 You can also specify a separator, a string used as the separator between appended values, when using the append modifier:
 
 ```ruby
-query.dissect('a', '%{date} - %{msg} - %{ip}', ',').to_s
+query.dissect!('a', '%{date} - %{msg} - %{ip}', ',').to_s
 # => 'FROM sample_data | DISSECT a """%{date} - %{msg} - %{ip}""" APPEND_SEPARATOR=","'
 ```
 
@@ -64,7 +82,7 @@ query.dissect('a', '%{date} - %{msg} - %{ip}', ',').to_s
 The [DROP](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-drop) processing command removes one or more columns.
 
 ```ruby
-query.drop('column1', 'column2').to_s
+query.drop!('column1', 'column2').to_s
 # => 'FROM sample_data | DROP column1, column2'
 ```
 
@@ -74,13 +92,13 @@ query.drop('column1', 'column2').to_s
 
 ```ruby
 esql = Elastic::ESQL.from('sample_data')
-esql.enrich('policy')
+esql.enrich!('policy')
 ```
 
 Once you call `enrich` on an `Elastic::ESQL` object, you can chain `on` and `with` to it.
 
 ```ruby
-esql.enrich('policy').on('a').with({ name: 'language_name' })
+esql.enrich!('policy').on('a').with({ name: 'language_name' })
 ```
 
 ### EVAL
@@ -153,7 +171,7 @@ Use the [WHERE](https://www.elastic.co/docs/reference/query-languages/esql/comma
 ```ruby
 query = Elastic::ESQL.from('sample')
 # => #<Elastic::ESQL:0x000073015ef041f0 @query={from: "sample"}>
-query.where('age > 18')
+query.where!('age > 18')
 #  => #<Elastic::ESQL:0x000073015ef041f0 @query={from: "sample", where: "age > 18"}>
 query.to_s
 # => "FROM sample | WHERE age > 18"

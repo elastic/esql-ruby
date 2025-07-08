@@ -22,13 +22,18 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts input and pattern as parameters' do
-      esql.dissect('a', '%{date} - %{msg} - %{ip}')
+      esql.dissect!('a', '%{date} - %{msg} - %{ip}')
       expect(esql.query).to eq 'FROM sample_data | DISSECT a """%{date} - %{msg} - %{ip}"""'
     end
 
     it 'accepts separator parameter' do
-      esql.dissect('a', '%{date} - %{msg} - %{ip}', ',')
+      esql.dissect!('a', '%{date} - %{msg} - %{ip}', ',')
       expect(esql.query).to eq 'FROM sample_data | DISSECT a """%{date} - %{msg} - %{ip}""" APPEND_SEPARATOR=","'
+    end
+
+    it 'accepts input and pattern as parameters with `dissect`' do
+      esql.dissect('a', '%{date} - %{msg} - %{ip}', ',')
+      expect(esql.query).to eq 'FROM sample_data'
     end
   end
 end

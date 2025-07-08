@@ -31,11 +31,15 @@ module Elastic
     #   esql.dissect('a', '%{date} - %{msg} - %{ip}', ',')
     #
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-dissect
-    def dissect(input, pattern, separator = nil)
+    def dissect!(input, pattern, separator = nil)
       query = "#{input} \"\"\"#{pattern}\"\"\""
       query.concat " APPEND_SEPARATOR=\"#{separator}\"" if separator
       @query[:dissect] = query
       self
+    end
+
+    def dissect(input, pattern, separator = nil)
+      method_copy(:dissect, input, pattern, separator)
     end
   end
 end

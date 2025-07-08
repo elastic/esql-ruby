@@ -32,7 +32,7 @@ module Elastic
     #   esql.change_point('my_column', key: 'my_key', type_name: 'spike', pvalue_name: 'pvalue')
     #
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-change_point
-    def change_point(column, key: nil, type_name: nil, pvalue_name: nil)
+    def change_point!(column, key: nil, type_name: nil, pvalue_name: nil)
       query = column
       query += " ON #{key}" unless key.nil?
       validate_type_name(type_name) if type_name
@@ -40,6 +40,10 @@ module Elastic
 
       @query[:change_point] = query
       self
+    end
+
+    def change_point(*params)
+      method_copy(:change_point, params)
     end
 
     private

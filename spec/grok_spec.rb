@@ -22,8 +22,16 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts input and pattern as parameters' do
-      esql.grok('a', '%{date} - %{msg} - %{ip}')
+      esql.grok!('a', '%{date} - %{msg} - %{ip}')
       expect(esql.query).to eq 'FROM sample_data | GROK a """%{date} - %{msg} - %{ip}"""'
+    end
+
+    it 'does not change the object when using grok' do
+      esql.grok('a', '%{date} - %{msg} - %{ip}')
+      expect(
+        esql.grok('a', '%{date} - %{msg} - %{ip}').object_id
+      ).not_to eq esql.object_id
+      expect(esql.query).to eq 'FROM sample_data'
     end
   end
 end

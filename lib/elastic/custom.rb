@@ -27,9 +27,16 @@ module Elastic
     #   esql.custom('| MY_VALUE = "test value"')
     #   esql.custom('| MY_VALUE = "test"').custom('| OTHER, VALUES')
     #
-    def custom(string)
+    def custom!(string)
       @custom << string
       self
+    end
+
+    def custom(*params)
+      esql = clone
+      esql.instance_variable_set('@custom', esql.instance_variable_get('@custom').clone)
+      esql.custom!(*params)
+      esql
     end
   end
 end

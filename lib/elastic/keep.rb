@@ -23,9 +23,13 @@ module Elastic
     #   esql.keep('column1, column2')
     #   esql.keep('column1', 'column2')
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-keep
-    def keep(*params)
+    def keep!(*params)
       @query[:keep] = params.join(', ')
       self
+    end
+
+    def keep(*params)
+      method_copy(:keep, params)
     end
   end
 end

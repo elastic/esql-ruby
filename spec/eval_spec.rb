@@ -22,12 +22,20 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts a Hash as a parameter' do
-      esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' })
+      esql.eval!({ height_feet: 'height * 3.281', height_cm: 'height * 100' })
       expect(esql.query).to eq 'FROM sample_data | EVAL height_feet = height * 3.281, height_cm = height * 100'
     end
 
     it 'raises error if the parameters are wrong' do
-      expect { esql.eval('duration_ms', 'event_duration', 1000) }.to raise_error ArgumentError
+      expect { esql.eval!('duration_ms', 'event_duration', 1000) }.to raise_error ArgumentError
+    end
+
+    it 'does not change the object when using eval' do
+      esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' })
+      expect(
+        esql.eval({ height_feet: 'height * 3.281', height_cm: 'height * 100' }).object_id
+      ).not_to eq esql.object_id
+      expect(esql.query).to eq 'FROM sample_data'
     end
   end
 end

@@ -148,5 +148,14 @@ module Elastic
 
       false
     end
+
+    # Helper method to return a copy of the object when functions are called without `!`, so the
+    # object is not mutated.
+    def method_copy(name, *params)
+      esql = clone
+      esql.instance_variable_set('@query', esql.instance_variable_get('@query').clone)
+      esql.send("#{name}!", *params)
+      esql
+    end
   end
 end

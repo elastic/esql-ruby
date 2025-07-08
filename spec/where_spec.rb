@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'WHERE' do
     let(:esql) { Elastic::ESQL.from('sample_data') }
@@ -39,5 +40,14 @@ describe Elastic::ESQL do
           .where('age > 18').query
       ).to eq 'FROM sample_data | WHERE first_name == "Juan" AND last_name == "Perez" AND age > 18'
     end
+
+    it 'mutates the query object' do
+      esql
+        .where!('first_name == "Juan"')
+        .where!('last_name == "Perez"')
+        .where!('age > 18').query
+      expect(esql.to_s).to eq 'FROM sample_data | WHERE first_name == "Juan" AND last_name == "Perez" AND age > 18'
+    end
   end
 end
+# rubocop:enable Metrics/BlockLength

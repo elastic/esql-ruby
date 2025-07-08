@@ -22,13 +22,30 @@ describe Elastic::ESQL do
     let(:esql) { Elastic::ESQL.from('sample_data') }
 
     it 'accepts a custom string as a parameter' do
-      esql.custom('| MY_VALUE = "test value"')
+      esql.custom!('| MY_VALUE = "test value"')
       expect(esql.query).to eq 'FROM sample_data | MY_VALUE = "test value"'
     end
 
     it 'accepts chaining custom strings' do
-      esql.custom('| MY_VALUE = "test value"').custom('| ANOTHER, VALUE')
+      esql.custom!('| MY_VALUE = "test value"').custom!('| ANOTHER, VALUE')
       expect(esql.query).to eq 'FROM sample_data | MY_VALUE = "test value" | ANOTHER, VALUE'
+    end
+
+    it 'accepts a custom string as a parameter' do
+      expect(esql.custom('| MY_VALUE = "test value"').to_s).to eq 'FROM sample_data | MY_VALUE = "test value"'
+      expect(esql.query).to eq 'FROM sample_data'
+    end
+
+    it 'accepts chaining custom strings with `custom`' do
+      expect(
+        esql.custom('| MY_VALUE = "test value"').custom('| ANOTHER, VALUE').to_s
+      ).to eq 'FROM sample_data | MY_VALUE = "test value" | ANOTHER, VALUE'
+    end
+
+    it 'does not mutate the original object when using `custom`' do
+      expect(
+        esql.custom('| MY_VALUE = "test value"').custom('| ANOTHER, VALUE').object_id
+      ).not_to eq esql.object_id
     end
   end
 end
