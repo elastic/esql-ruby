@@ -1,6 +1,24 @@
 # Ruby ES|QL Query builder
 
-This gem allows you to build [ES|QL](https://www.elastic.co/docs/explore-analyze/query-filter/languages/esql) queries to use with Elastic's ES|QL `query` API.
+[![Tests](https://github.com/elastic/esql-ruby/actions/workflows/tests.yml/badge.svg)](https://github.com/elastic/esql-ruby/actions/workflows/tests.yml) [![rubocop](https://github.com/elastic/esql-ruby/actions/workflows/rubocop.yml/badge.svg)](https://github.com/elastic/esql-ruby/actions/workflows/rubocop.yml) [![Gem Version](https://badge.fury.io/rb/elastic-esql.svg)](https://badge.fury.io/rb/elastic-esql)
+
+This gem allows you to build [ES|QL](https://www.elastic.co/docs/explore-analyze/query-filter/languages/esql) queries to use with Elastic's ES|QL `query` API. The library doesn't depend on an Elasticsearch client - its sole purpose is to facilitate building ES|QL queries in Ruby. This makes it possible to use it with any Elasticsearch client.
+
+## Installation
+
+You can install this gem from RubyGems with:
+
+```
+gem install elastic-esql
+```
+
+or add it to your Gemfile:
+
+```ruby
+gem 'elastic-esql'
+```
+
+## Use
 
 > [!IMPORTANT]
 > This library is in active development and the final API hasn't been completed yet. If you have any feedback on the current API or general usage, please don't hesitate to [open a new issue](https://github.com/elastic/esql-ruby/issues).
