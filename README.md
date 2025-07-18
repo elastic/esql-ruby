@@ -1,4 +1,4 @@
-# Ruby ES|QL Query builder
+# Ruby ES|QL Query Builder
 
 [![Tests](https://github.com/elastic/esql-ruby/actions/workflows/tests.yml/badge.svg)](https://github.com/elastic/esql-ruby/actions/workflows/tests.yml) [![rubocop](https://github.com/elastic/esql-ruby/actions/workflows/rubocop.yml/badge.svg)](https://github.com/elastic/esql-ruby/actions/workflows/rubocop.yml) [![Gem Version](https://badge.fury.io/rb/elastic-esql.svg)](https://badge.fury.io/rb/elastic-esql)
 
