@@ -22,8 +22,9 @@ require_relative 'drop'
 require_relative 'enrich'
 require_relative 'eval'
 require_relative 'grok'
-require_relative 'limit'
 require_relative 'keep'
+require_relative 'limit'
+require_relative 'metadata'
 require_relative 'rename'
 require_relative 'row'
 require_relative 'show'
@@ -43,6 +44,7 @@ module Elastic
     include Grok
     include Keep
     include Limit
+    include Metadata
     include Rename
     include Row
     include Show
@@ -53,6 +55,7 @@ module Elastic
     def initialize
       @query = {}
       @custom = []
+      @metadata = []
     end
 
     # Function to build the ES|QL formatted query and return it as a String.
@@ -63,7 +66,11 @@ module Elastic
 
       @query[:enrich] = @enriches.join('| ') if @enriches
       string_query = @query.map do |k, v|
-        "#{k.upcase} #{v}"
+        if k == :from && !@metadata.empty?
+          "#{k.upcase} #{v} METADATA #{@metadata.join(', ')}"
+        else
+          "#{k.upcase} #{v}"
+        end
       end.join(' | ')
 
       string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
@@ -134,7 +141,7 @@ module Elastic
     # Error raised when a function expects a Hash and something else is passed in, with explanation
     def raise_hash_error(name)
       raise ArgumentError, "#{name.to_s.upcase} needs a Hash as a parameter where the keys are the " \
-                          'column names and the value is the function or expression to calculate.'
+                           'column names and the value is the function or expression to calculate.'
     end
 
     # Used when building the query from hash params function

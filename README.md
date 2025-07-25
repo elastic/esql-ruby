@@ -78,6 +78,13 @@ Elastic::ESQL.show
 
 While `row` and `from` can be chained with other functions to build a complex query, `show` will just return the `SHOW INFO` String.
 
+ES|QL can access [document metadata fields](https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/document-metadata-fields). To access these fields, use the `METADATA` directive with the `FROM` source command. For example:
+
+```ruby
+Elastic::ESQL.from('index').metadata('_index', '_id').query
+    # => FROM index METADATA _index, _id
+```
+
 ### DISSECT
 
 [DISSECT](https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok ) enables you to extract structured data out of a string. The `dissect` function accepts a input and a pattern:
