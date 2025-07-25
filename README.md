@@ -162,6 +162,17 @@ query.limit(2).to_s
 # => 'FROM sample_data | LIMIT 2'
 ```
 
+### LOOKUP JOIN
+
+[LOOKUP JOIN](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-lookup-join) enables you to add data from another index, AKA a 'lookup' index, to your ES|QL query results, simplifying data enrichment and analysis workflows.
+
+```ruby
+Elastic::ESQL.from('system_metrics')
+             .lookup_join('host_inventory', 'host.name')
+             .lookup_join('ownerships', 'host.name').query
+# => FROM system_metrics | LOOKUP JOIN host_inventory ON host.name | LOOKUP JOIN ownerships ON host.name
+```
+
 ### RENAME
 
 The [RENAME](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-rename) processing command renames one or more columns. Pass in a Hash where keys are the name of columns you want to rename, and the value is the name of the new column:
