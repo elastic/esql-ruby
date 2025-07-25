@@ -68,14 +68,7 @@ module Elastic
       raise ArgumentError, 'No source command found' unless source_command_present?
 
       @query[:enrich] = @enriches.join('| ') if @enriches
-      string_query = @query.map do |k, v|
-        if k == :from && !@metadata.empty?
-          "#{k.upcase} #{v} METADATA #{@metadata.join(', ')}"
-        else
-          "#{k.upcase} #{v}"
-        end
-      end.join(' | ')
-
+      string_query = build_string_query
       string_query.concat(build_lookup_joins) unless @lookup_joins.empty?
       string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
       string_query
@@ -173,6 +166,20 @@ module Elastic
     def build_lookup_joins
       joins = @lookup_joins.map { |a| a.map { |k, v| "LOOKUP JOIN #{k} ON #{v}" } }.flatten.join(' | ')
       " | #{joins}"
+    end
+
+    # Helper to build the String for the simpler functions.
+    # These are of the form 'key.upcase value' like 'DROP value'
+    # If metadata has been set, it needs to be added to FROM. There's a possibility there'll be more
+    # special cases like this in the future, they can be added here.
+    def build_string_query
+      @query.map do |k, v|
+        if k == :from && !@metadata.empty?
+          "#{k.upcase} #{v} METADATA #{@metadata.join(', ')}"
+        else
+          "#{k.upcase} #{v}"
+        end
+      end.join(' | ')
     end
   end
 end
