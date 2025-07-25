@@ -24,6 +24,7 @@ require_relative 'eval'
 require_relative 'grok'
 require_relative 'keep'
 require_relative 'limit'
+require_relative 'lookup_join'
 require_relative 'metadata'
 require_relative 'rename'
 require_relative 'row'
@@ -44,6 +45,7 @@ module Elastic
     include Grok
     include Keep
     include Limit
+    include LookupJoin
     include Metadata
     include Rename
     include Row
@@ -56,6 +58,7 @@ module Elastic
       @query = {}
       @custom = []
       @metadata = []
+      @lookup_joins = []
     end
 
     # Function to build the ES|QL formatted query and return it as a String.
@@ -73,6 +76,7 @@ module Elastic
         end
       end.join(' | ')
 
+      string_query.concat(build_lookup_joins) unless @lookup_joins.empty?
       string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
       string_query
     end
@@ -163,6 +167,12 @@ module Elastic
       esql.instance_variable_set('@query', esql.instance_variable_get('@query').clone)
       esql.send("#{name}!", *params)
       esql
+    end
+
+    # Helper to build the LOOKUP JOIN part of the query.
+    def build_lookup_joins
+      joins = @lookup_joins.map { |a| a.map { |k, v| "LOOKUP JOIN #{k} ON #{v}" } }.flatten.join(' | ')
+      " | #{joins}"
     end
   end
 end
