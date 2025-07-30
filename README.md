@@ -82,7 +82,7 @@ ES|QL can access [document metadata fields](https://www.elastic.co/docs/referenc
 
 ```ruby
 Elastic::ESQL.from('index').metadata('_index', '_id').query
-    # => FROM index METADATA _index, _id
+# => FROM index METADATA _index, _id
 ```
 
 ### DISSECT

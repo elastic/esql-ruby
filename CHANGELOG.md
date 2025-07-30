@@ -1,3 +1,25 @@
+# 0.2.0
+
+## Adds METADATA function for FROM source command.
+
+ES|QL can access [document metadata fields](https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/document-metadata-fields). To access these fields, use the `METADATA` directive with the `FROM` source command. For example:
+
+```ruby
+Elastic::ESQL.from('index').metadata('_index', '_id').query
+# => FROM index METADATA _index, _id
+```
+
+## Adds LOOKUP JOIN
+
+[LOOKUP JOIN](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-lookup-join) enables you to add data from another index, AKA a 'lookup' index, to your ES|QL query results, simplifying data enrichment and analysis workflows.
+
+```ruby
+Elastic::ESQL.from('system_metrics')
+             .lookup_join('host_inventory', 'host.name')
+             .lookup_join('ownerships', 'host.name').query
+# => FROM system_metrics | LOOKUP JOIN host_inventory ON host.name | LOOKUP JOIN ownerships ON host.name
+```
+
 # 0.1.0
 
 First release, of ES|QL Query builder for Ruby.
