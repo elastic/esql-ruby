@@ -74,8 +74,8 @@ module Elastic
       string_query
     end
 
-    # Creates a new Enrich object to chain with +on+ and +with+. If other methods are chained to the
-    # Enrich object, it returns calls it upon the ESQL object that instantiated it, and returns it.
+    # Creates a new Enrich object to chain with +on+ and +with+. If other method is chained to the
+    # Enrich object, it calls it upon the ESQL object that instantiated it, and returns it.
     # @return [Elastic::Enrich]
     def enrich(policy)
       @enriches ||= []
