@@ -30,6 +30,7 @@ require_relative 'rename'
 require_relative 'row'
 require_relative 'show'
 require_relative 'sort'
+require_relative 'ts'
 require_relative 'where'
 
 module Elastic
@@ -51,8 +52,10 @@ module Elastic
     include Row
     include Show
     include Sort
+    include TS
     include Where
-    SOURCE_COMMANDS = [:from, :row, :show].freeze
+
+    SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
 
     def initialize
       @query = {}
@@ -107,6 +110,10 @@ module Elastic
     # @option params [String] value The value for the column. Can be a literal, an expression, or a function.
     def self.row(*params)
       new.row(*params)
+    end
+
+    def self.ts(*params)
+      new.ts(*params)
     end
 
     # Instance method to allow to update +from+ with +esql.from('different_source')+.

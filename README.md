@@ -58,7 +58,7 @@ query.to_s
 
 📜 Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`.
 
-### Source Commands (FROM, ROW, SHOW)
+### Source Commands (FROM, ROW, SHOW, TS)
 
 An ES|QL query must start with a source command:
 
@@ -74,15 +74,27 @@ Elastic::ESQL.row(a: 1, b: 'two').to_s
 # SHOW
 Elastic::ESQL.show
 # => SHOW INFO
+
+# TS
+Elastic::ESQL.ts('index_pattern')
+# => TS index_pattern
 ```
 
-While `row` and `from` can be chained with other functions to build a complex query, `show` will just return the `SHOW INFO` String.
+While `from`, `row` and `ts` can be chained with other functions to build a complex query, `show` will just return the `SHOW INFO` String.
 
 ES|QL can access [document metadata fields](https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/document-metadata-fields). To access these fields, use the `METADATA` directive with the `FROM` source command. For example:
 
 ```ruby
 Elastic::ESQL.from('index').metadata('_index', '_id').query
 # => FROM index METADATA _index, _id
+```
+
+In the case of `TS`, you can pass the metadata fields to the `ts` method:
+
+```ruby
+fields = '_index, _id_'
+Elastic::ESQL.ts('index_pattern', fields).query
+# => "TS index_pattern METADATA _index, _id_"
 ```
 
 ### DISSECT
