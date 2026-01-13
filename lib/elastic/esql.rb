@@ -21,6 +21,7 @@ require_relative 'dissect'
 require_relative 'drop'
 require_relative 'enrich'
 require_relative 'eval'
+require_relative 'functions'
 require_relative 'grok'
 require_relative 'keep'
 require_relative 'limit'
@@ -30,6 +31,7 @@ require_relative 'rename'
 require_relative 'row'
 require_relative 'show'
 require_relative 'sort'
+require_relative 'stats'
 require_relative 'ts'
 require_relative 'where'
 
@@ -52,6 +54,7 @@ module Elastic
     include Row
     include Show
     include Sort
+    include Stats
     include TS
     include Where
 
