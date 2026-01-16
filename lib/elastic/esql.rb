@@ -132,6 +132,20 @@ module Elastic
       query
     end
 
+    def self.🐔(message)
+      "ROW CHICKEN #{message}"
+    end
+
+    def 🐔(message)
+      self.class.🐔(message)
+    end
+
+    alias chicken 🐔
+
+    class << self
+      alias chicken 🐔
+    end
+
     private
 
     # Function for eval, row, and other functions that have one or more columns with values specified
