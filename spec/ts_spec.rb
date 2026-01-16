@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'TS' do
     it 'shows the expected queries' do
@@ -34,7 +35,7 @@ describe Elastic::ESQL do
     end
 
     it 'accepts fields as Array' do
-      fields = ['_index', '_id']
+      fields = %w[_index _id]
       esql = Elastic::ESQL.ts('sample', fields)
       expect(esql.query).to eq 'TS sample METADATA _index, _id'
     end
@@ -53,3 +54,4 @@ describe Elastic::ESQL do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

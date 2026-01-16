@@ -52,6 +52,7 @@ module Elastic
     private
 
     # Turns a stat Hash into the required query
+    # rubocop:disable Metrics/AbcSize
     def stat_to_string(stat)
       validate_function(stat)
       expressions = find_expressions(stat)
@@ -62,6 +63,7 @@ module Elastic
       query << "BY #{stat[:by]}" if stat[:by]
       query.join(' ')
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Validates that there's an expression with a function
     def validate_function(stat)

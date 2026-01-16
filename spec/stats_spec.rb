@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'STATS' do
     it 'writes a stats query with column, by, where and functions' do
@@ -121,3 +122,4 @@ describe Elastic::ESQL do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

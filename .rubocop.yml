@@ -7,5 +7,7 @@ Style/FormatStringToken:
   EnforcedStyle: 'template'
 Style/SymbolArray:
   EnforcedStyle: brackets
+Naming/AsciiIdentifiers:
+  Enabled: false
 AllCops:
   SuggestExtensions: false

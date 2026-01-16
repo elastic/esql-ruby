@@ -39,6 +39,7 @@ module Elastic
   # @example
   #    Elastic::ESQL.from('sample_data').sort_descending('@timestamp').limit(3).to_s
   #    # => FROM 'sample_data' | SORT @timestamp desc | LIMIT 3
+  # rubocop:disable Metrics/ClassLength
   class ESQL
     include ChangePoint
     include Custom
@@ -132,6 +133,7 @@ module Elastic
       query
     end
 
+    # rubocop:disable Naming/MethodName, Naming/BinaryOperatorParameterName
     def self.🐔(message)
       "ROW CHICKEN #{message}"
     end
@@ -145,6 +147,7 @@ module Elastic
     class << self
       alias chicken 🐔
     end
+    # rubocop:enable Naming/MethodName, Naming/BinaryOperatorParameterName
 
     private
 
@@ -206,4 +209,5 @@ module Elastic
       end.join(' | ')
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

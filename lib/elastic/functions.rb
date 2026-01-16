@@ -57,5 +57,5 @@ module Elastic
     :stddev_over_time,
     :sum_over_time,
     :variance_over_time
-  ]
+  ].freeze
 end
