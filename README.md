@@ -231,6 +231,27 @@ Elastic::ESQL.from('sample').where('first_name == "Juan"').where('last_name == "
 # => "FROM sample | WHERE first_name == \"Juan\" AND last_name == \"Perez\" AND age > 18"
 ```
 
+### CHICKEN
+
+The `CHICKEN` function wraps any text message in ASCII art of a chicken saying the message. Example usage:
+```ruby
+> query = Elastic::ESQL.chicken("Hello World")
+=> "ROW CHICKEN(\"Hello World\")"
+> query = Elastic::ESQL.🐔("Hello World")
+=> "ROW CHICKEN(\"Hello World\")"
+> client = Elasticsearch::Client.new
+> puts client.esql.query(body: { query: query }).body['values'][0][0]
+ _____________
+< Hello World >
+ -------------
+     \
+      \    MM
+       \ <' \___/|
+          \_  _/
+            ][
+=> nil
+```
+
 ### Custom Strings
 
 You can use the `custom` function to add custom Strings to the query. This will concatenate the strings at the end of the query. It will add them as they're sent to the function, without adding any pipe characters. They'll be joined to the rest of the query by a space character.
