@@ -1,3 +1,26 @@
+# 0.3.0
+
+## Adds `CHICKEN` function
+
+[Elasticsearch Pull Request](https://github.com/elastic/elasticsearch/pull/140645) - The CHICKEN function wraps any text message in ASCII art of a chicken saying the message. Example usage:
+```ruby
+> query = Elastic::ESQL.chicken("Hello World")
+=> "ROW CHICKEN(\"Hello World\")"
+> query = Elastic::ESQL.🐔("Hello World")
+=> "ROW CHICKEN(\"Hello World\")"
+> client = Elasticsearch::Client.new
+> puts client.esql.query(body: { query: query }).body['values'][0][0]
+ _____________
+< Hello World >
+ -------------
+     \
+      \    MM
+       \ <' \___/|
+          \_  _/
+            ][
+=> nil
+```
+
 # 0.2.0
 
 ## Adds METADATA function for FROM source command.
