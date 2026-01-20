@@ -20,6 +20,20 @@ require 'spec_helper'
 # rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'STATS' do
+    it 'writes a simple from query' do
+      esql = Elastic::ESQL.from('employees').stats(column: 'avg_lang', avg: 'languages')
+      expect(esql.query).to eq 'FROM employees | STATS avg_lang = AVG(languages)'
+    end
+
+    it 'writes the query to calculate multiple values' do
+      stats = [
+        { column: 'avg_lang', avg: 'languages' },
+        { column: 'max_lang', max: 'languages' }
+      ]
+      esql = Elastic::ESQL.from('employees').stats(stats)
+      expect(esql.query).to eq 'FROM employees | STATS avg_lang = AVG(languages), max_lang = MAX(languages)'
+    end
+
     it 'writes a stats query with column, by, where and functions' do
       stat = { column: 'fernando', count: 'emp_no', by: 'language', where: 'a = 1' }
       esql = Elastic::ESQL.from('sample_data').stats(stat)
@@ -41,7 +55,7 @@ describe Elastic::ESQL do
       )
     end
 
-    it 'runs this one too' do
+    it 'writes a query with WHERE' do
       esql = Elastic::ESQL.from('employees').where('emp_no == 10020').stats({ column: 'is_absent',
                                                                               absent: 'languages' })
       expect(esql.query).to eq(
