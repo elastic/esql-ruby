@@ -21,19 +21,12 @@ gem 'elastic-esql'
 ## Use
 
 > [!IMPORTANT]
-> This library is in active development and the final API hasn't been completed yet. If you have any feedback on the current API or general usage, please don't hesitate to [open a new issue](https://github.com/elastic/esql-ruby/issues).
+> This library is in active development and the final API hasn't been completed yet. If you have any feedback on the current API or general usage, please don't hesitate to [open a new issue](https://github.com/elastic/esql-ruby/issues). It may also add features available in technical preview only.
 
-You can instantiate a query with a [source command](https://www.elastic.co/docs/reference/query-languages/esql/esql-commands#esql-source-commands), like `from` or `row`:
+You can instantiate a query with a [source command](https://www.elastic.co/docs/reference/query-languages/esql/esql-commands#esql-source-commands), `FROM`, `ROW`, `SHOW` or `TS`:
 
 ```ruby
 Elastic::ESQL.from('sample')
-```
-
-The `show` command will always return the String `'SHOW INFO'`:
-
-```ruby
-Elastic::ESQL.show
-# => "SHOW INFO"
 ```
 
 Build the query by chaining ES|QL methods. You can see the generated query with `.to_s`:
@@ -60,7 +53,7 @@ query.to_s
 
 ### Source Commands (FROM, ROW, SHOW, TS)
 
-An ES|QL query must start with a source command:
+An ES|QL query **must start** with a source command:
 
 ```ruby
 # FROM
@@ -72,12 +65,15 @@ Elastic::ESQL.row(a: 1, b: 'two').to_s
 # => ROW a = 1, b = two
 
 # SHOW
-Elastic::ESQL.show
+# The `show` command will always return the String `'SHOW INFO'`:
+Elastic::ESQL.show.to_s
 # => SHOW INFO
 
 # TS
-Elastic::ESQL.ts('index_pattern')
+Elastic::ESQL.ts('index_pattern').to_s
 # => TS index_pattern
+> Elastic::ESQL.ts('sample', '_index, _id').query
+# => TS sample METADATA _index, _id
 ```
 
 While `from`, `row` and `ts` can be chained with other functions to build a complex query, `show` will just return the `SHOW INFO` String.
@@ -211,6 +207,59 @@ Elastic::ESQL.from('sample_data').sort('@timestamp').ascending.to_s
 Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.to_s
 # => 'FROM sample_data | SORT @timestamp DESC NULLS FIRST'
 ```
+
+### STATS
+
+The [`STATS`](https://www.elastic.co/docs/reference/query-languages/esql/commands/stats-by) processing command groups rows according to a common value and calculates one or more aggregated values over the grouped rows.
+
+```ruby
+> Elastic::ESQL.from('employees').stats(column: 'avg_lang', avg: 'languages').query
+# => "FROM employees | STATS avg_lang = AVG(languages)"
+```
+
+It’s possible to calculate multiple values:
+
+```ruby
+> stats = [
+    { column: 'avg_lang', avg: 'languages' },
+    { column: 'max_lang', max: 'languages' }
+  ]
+> Elastic::ESQL.from('employees').stats(stats).query
+# => "FROM employees | STATS avg_lang = AVG(languages), max_lang = MAX(languages)"
+```
+
+You can write more complex queries with `where`, grouping and multiple values:
+```ruby
+> stats = [
+  { column: 'avg50s', avg: 'salary::LONG', where: 'birth_date < "1960-01-01"' },
+  { column: 'avg60s', avg: 'salary::LONG', where: 'birth_date >= "1960-01-01"' }
+]
+> esql = Elastic::ESQL.from('employees').stats(stats).by('gender').sort('gender')
+> esql.query
+# => "FROM employees | STATS avg50s = AVG(salary)::LONG WHERE birth_date < \"1960-01-01\", avg60s = AVG(salary)::LONG WHERE birth_date >= \"1960-01-01\" BY gender | SORT gender"
+```
+
+And nested functions:
+
+```ruby
+> stats = { column: 'distinct_word_count', count_distinct: { split: 'words, ";"' } }
+> esql = Elastic::ESQL.row(words: '"foo;bar;baz;qux;quux;foo"').stats(stats)
+> esql.query
+# => "ROW words = \"foo;bar;baz;qux;quux;foo\" | STATS distinct_word_count = COUNT_DISTINCT(SPLIT(words, \";\"))"
+```
+
+They can be used with `TS`:
+
+```ruby
+> esql = Elastic::ESQL.ts('k8s')
+         .where('cluster == "prod"')
+         .where('pod == "two"')
+         .stats({ column: 'events_received', max: { absent_over_time: 'events_received' } })
+         .by('pod, time_bucket = TBUCKET(2 minute)')
+> esql.query
+# => "TS k8s | WHERE cluster == \"prod\" AND pod == \"two\" | STATS events_received = MAX(ABSENT_OVER_TIME(events_received)) BY pod, time_bucket = TBUCKET(2 minute)"
+```
+
 
 ### WHERE
 

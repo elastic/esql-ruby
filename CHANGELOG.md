@@ -1,8 +1,37 @@
 # 0.3.0
 
+## Adds `TS` source command
+
+The [`TS`](https://www.elastic.co/docs/reference/query-languages/esql/commands/ts) source command is similar to the `FROM` source command, with the following key differences:
+
+* Targets only time series indices
+* Enables the use of time series aggregation functions inside the STATS command
+
+Syntax:
+
+```ruby
+> Elastic::ESQL.ts('sample').query
+=> "TS sample"
+> Elastic::ESQL.ts('sample', ['_index', '_id']).query
+=> "TS sample METADATA _index, _id"
+> Elastic::ESQL.ts('sample', '_index, _id').query
+=> "TS sample METADATA _index, _id"
+```
+
+## Adds `STATS` command
+
+The [`STATS`](https://www.elastic.co/docs/reference/query-languages/esql/commands/stats-by) processing command groups rows according to a common value and calculates one or more aggregated values over the grouped rows.
+
+```ruby
+> Elastic::ESQL.from('employees').stats(column: 'avg_lang', avg: 'languages').query
+=> "FROM employees | STATS avg_lang = AVG(languages)"
+```
+
+See [README](https://github.com/elastic/esql-ruby?tab=readme-ov-file#stats) for more usage examples.
+
 ## Adds `CHICKEN` function
 
-[Elasticsearch Pull Request](https://github.com/elastic/elasticsearch/pull/140645) - The CHICKEN function wraps any text message in ASCII art of a chicken saying the message. Example usage:
+[Elasticsearch Pull Request](https://github.com/elastic/elasticsearch/pull/140645) - The `CHICKEN` function wraps any text message in ASCII art of a chicken saying the message. Example usage:
 ```ruby
 > query = Elastic::ESQL.chicken("Hello World")
 => "ROW CHICKEN(\"Hello World\")"
@@ -18,7 +47,6 @@
        \ <' \___/|
           \_  _/
             ][
-=> nil
 ```
 
 # 0.2.0
