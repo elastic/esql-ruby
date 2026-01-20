@@ -21,19 +21,19 @@ describe Elastic::ESQL do
   # rubocop:disable
   context '🐔' do
     it 'calls chicken from class' do
-      expect(Elastic::ESQL.🐔('Hola mundo')).to eq 'ROW CHICKEN Hola mundo'
+      expect(Elastic::ESQL.🐔('Hola mundo')).to eq 'ROW CHICKEN("Hola mundo")'
     end
 
     it 'calls chicken from class with alias' do
-      expect(Elastic::ESQL.chicken('Hola mundo')).to eq 'ROW CHICKEN Hola mundo'
+      expect(Elastic::ESQL.chicken('Hola mundo')).to eq 'ROW CHICKEN("Hola mundo")'
     end
 
     it 'calls chicken from instance' do
-      expect(Elastic::ESQL.new.chicken('Hola mundo')).to eq 'ROW CHICKEN Hola mundo'
+      expect(Elastic::ESQL.new.chicken('Hola mundo')).to eq 'ROW CHICKEN("Hola mundo")'
     end
 
     it 'calls chicken from class' do
-      expect(Elastic::ESQL.new.🐔('Hola mundo')).to eq 'ROW CHICKEN Hola mundo'
+      expect(Elastic::ESQL.new.🐔('Hola mundo')).to eq 'ROW CHICKEN("Hola mundo")'
     end
   end
   # rubocop:enable

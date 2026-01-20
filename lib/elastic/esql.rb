@@ -135,7 +135,7 @@ module Elastic
 
     # rubocop:disable Naming/MethodName, Naming/BinaryOperatorParameterName
     def self.🐔(message)
-      "ROW CHICKEN #{message}"
+      "ROW CHICKEN(\"#{message}\")"
     end
 
     def 🐔(message)
