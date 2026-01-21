@@ -15,28 +15,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-module Elastic
-  # Use the WHERE command to query the data.
-  # TODO: WHERE supports several operators. For example, you can use LIKE to run a wildcard query
-  # against the message column.
-  module Where
-    # @param [String] expression A boolean expression.
-    # @example
-    #   esql.where('name LIKE "Something"')
-    #
-    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-where
-    def where!(expression)
-      expression = expression.map { |k, v| "#{k} == #{v}" }.join if expression.is_a?(Hash)
-      if @query[:where]
-        @query[:where] += " AND #{expression}"
-      else
-        @query[:where] = expression
-      end
-      self
-    end
+require 'spec_helper'
 
-    def where(expression)
-      method_copy(:where, expression)
+describe Elastic::ESQL do
+  context 'FORK' do
+    it 'builds a fork query' do
+      esql = Elastic::ESQL.from('employees')
+                          .fork([
+                                  Elastic::ESQL.new.where('emp_no == 10001'),
+                                  Elastic::ESQL.new.where('emp_no == 10002')
+                                ])
+                          .keep('emp_no', '_fork')
+                          .sort('emp_no')
+      expect(esql.query).to eq(
+                              'FROM employees ' \
+                              '| FORK (WHERE emp_no == 10001) ' \
+                              '(WHERE emp_no == 10002) ' \
+                              '| KEEP emp_no, _fork ' \
+                              '| SORT emp_no'
+                            )
     end
   end
 end

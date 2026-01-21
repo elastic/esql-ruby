@@ -15,28 +15,26 @@
 # specific language governing permissions and limitations
 # under the License.
 
-module Elastic
-  # Use the WHERE command to query the data.
-  # TODO: WHERE supports several operators. For example, you can use LIKE to run a wildcard query
-  # against the message column.
-  module Where
-    # @param [String] expression A boolean expression.
-    # @example
-    #   esql.where('name LIKE "Something"')
-    #
-    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-where
-    def where!(expression)
-      expression = expression.map { |k, v| "#{k} == #{v}" }.join if expression.is_a?(Hash)
-      if @query[:where]
-        @query[:where] += " AND #{expression}"
-      else
-        @query[:where] = expression
-      end
-      self
+require 'spec_helper'
+
+describe Elastic::ESQL do
+  context 'FUSE' do
+    let(:esql) do
+      ESQL.from('books')
+        .metadata('_id, _index, _score')
+        .fork([
+                ESQL.new.where(title: 'Shakespeare').sort('_score').desc,
+                ESQL.new.where(semantic_title: 'Shakespeare').sort('_score').desc,
+              ])
     end
 
-    def where(expression)
-      method_copy(:where, expression)
+    it 'builds a fuse query with no parameters' do
+      expect(esql.fuse.to_s).to eq (
+                                  'FROM books METADATA _id, _index, _score ' \
+                                  '| FORK (WHERE title:"Shakespeare" | SORT _score DESC) ' \
+                                  '(WHERE semantic_title:"Shakespeare" | SORT _score DESC) ' \
+                                  '| FUSE'
+                                )
     end
   end
 end

@@ -22,6 +22,8 @@ require_relative 'drop'
 require_relative 'enrich'
 require_relative 'eval'
 require_relative 'functions'
+require_relative 'fork'
+require_relative 'fuse'
 require_relative 'grok'
 require_relative 'keep'
 require_relative 'limit'
@@ -46,6 +48,8 @@ module Elastic
     include Dissect
     include Drop
     include Eval
+    include Fork
+    include Fuse
     include Grok
     include Keep
     include Limit
@@ -72,7 +76,7 @@ module Elastic
     # @raise [ArgumentError] if the query has no source command
     # @return [String] The ES|QL query in ES|QL format.
     def query
-      raise ArgumentError, 'No source command found' unless source_command_present?
+      # raise ArgumentError, 'No source command found' unless source_command_present?
 
       @query[:enrich] = @enriches.join('| ') if @enriches
       string_query = build_string_query

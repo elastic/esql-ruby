@@ -16,27 +16,14 @@
 # under the License.
 
 module Elastic
-  # Use the WHERE command to query the data.
-  # TODO: WHERE supports several operators. For example, you can use LIKE to run a wildcard query
-  # against the message column.
-  module Where
-    # @param [String] expression A boolean expression.
-    # @example
-    #   esql.where('name LIKE "Something"')
-    #
-    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-where
-    def where!(expression)
-      expression = expression.map { |k, v| "#{k} == #{v}" }.join if expression.is_a?(Hash)
-      if @query[:where]
-        @query[:where] += " AND #{expression}"
-      else
-        @query[:where] = expression
-      end
+  # The FORK processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table.
+  # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/fork
+  module Fork
+    # @param [Array<String>|String] columns A comma-separated list of columns to remove.
+    # @option params [Symbol] fuse_method name The column name. In case of duplicate column names, only the
+    def fork(forks)
+      @query[:fork] = forks.map { |f| "(#{f.query})" }.join(' ')
       self
-    end
-
-    def where(expression)
-      method_copy(:where, expression)
     end
   end
 end
