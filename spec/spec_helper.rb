@@ -16,3 +16,4 @@
 # under the License.
 
 require 'elastic/esql'
+include Elastic
