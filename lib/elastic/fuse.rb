@@ -21,8 +21,8 @@ module Elastic
   module Fuse
     # @param [Array<String>|String] columns A comma-separated list of columns to remove.
     # @option params [Symbol] fuse_method name The column name. In case of duplicate column names, only the
-    def fuse(*params)
-      @query[:fuse] = ''
+    def fuse(type = nil)
+      @query[:fuse] = type&.upcase
       self
     end
   end
