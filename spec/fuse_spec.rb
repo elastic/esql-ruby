@@ -23,17 +23,26 @@ describe Elastic::ESQL do
       ESQL.from('books')
         .metadata('_id, _index, _score')
         .fork([
-                ESQL.new.where(title: 'Shakespeare').sort('_score').desc,
-                ESQL.new.where(semantic_title: 'Shakespeare').sort('_score').desc,
+                FORK.new.where('title == "Shakespeare"').sort('_score').desc,
+                FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
               ])
     end
 
     it 'builds a fuse query with no parameters' do
-      expect(esql.fuse.to_s).to eq (
+      expect(esql.fuse.to_s).to eq(
                                   'FROM books METADATA _id, _index, _score ' \
-                                  '| FORK (WHERE title:"Shakespeare" | SORT _score DESC) ' \
-                                  '(WHERE semantic_title:"Shakespeare" | SORT _score DESC) ' \
+                                  '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
+                                  '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
                                   '| FUSE'
+                                )
+    end
+
+    it 'builds a fuse LINEAR query' do
+      expect(esql.fuse(:linear).to_s).to eq(
+                                           'FROM books METADATA _id, _index, _score ' \
+                                           '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
+                                           '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
+                                           '| FUSE LINEAR'
                                 )
     end
   end

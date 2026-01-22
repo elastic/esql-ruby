@@ -48,6 +48,10 @@ describe Elastic::ESQL do
         .where!('age > 18').query
       expect(esql.to_s).to eq 'FROM sample_data | WHERE first_name == "Juan" AND last_name == "Perez" AND age > 18'
     end
+
+    it 'uses the other where format' do
+      expect(esql.where('first_name: "Juan"').query).to eq 'FROM sample_data | WHERE first_name: "Juan"'
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

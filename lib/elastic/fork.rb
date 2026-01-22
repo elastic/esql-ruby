@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+require_relative 'queryable'
+require_relative 'util'
 
 module Elastic
   # The FORK processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table.
@@ -24,6 +26,19 @@ module Elastic
     def fork(forks)
       @query[:fork] = forks.map { |f| "(#{f.query})" }.join(' ')
       self
+    end
+  end
+
+  class FORK
+    include Queryable
+    include Util
+
+    def initialize
+      @query = {}
+    end
+
+    def query
+      build_string_query
     end
   end
 end

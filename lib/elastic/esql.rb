@@ -26,16 +26,15 @@ require_relative 'fork'
 require_relative 'fuse'
 require_relative 'grok'
 require_relative 'keep'
-require_relative 'limit'
 require_relative 'lookup_join'
 require_relative 'metadata'
+require_relative 'queryable'
 require_relative 'rename'
 require_relative 'row'
 require_relative 'show'
-require_relative 'sort'
 require_relative 'stats'
 require_relative 'ts'
-require_relative 'where'
+require_relative 'util'
 
 module Elastic
   # @example
@@ -43,25 +42,10 @@ module Elastic
   #    # => FROM 'sample_data' | SORT @timestamp desc | LIMIT 3
   # rubocop:disable Metrics/ClassLength
   class ESQL
-    include ChangePoint
-    include Custom
-    include Dissect
-    include Drop
-    include Eval
-    include Fork
-    include Fuse
-    include Grok
-    include Keep
-    include Limit
-    include LookupJoin
-    include Metadata
-    include Rename
-    include Row
-    include Show
-    include Sort
-    include Stats
-    include TS
-    include Where
+    [
+      ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, Keep, LookupJoin, Metadata,
+      Queryable, Rename, Row, Show, Stats, TS, Util
+    ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
 
@@ -76,7 +60,7 @@ module Elastic
     # @raise [ArgumentError] if the query has no source command
     # @return [String] The ES|QL query in ES|QL format.
     def query
-      # raise ArgumentError, 'No source command found' unless source_command_present?
+      raise ArgumentError, 'No source command found' unless source_command_present?
 
       @query[:enrich] = @enriches.join('| ') if @enriches
       string_query = build_string_query
@@ -184,33 +168,10 @@ module Elastic
       false
     end
 
-    # Helper method to return a copy of the object when functions are called without `!`, so the
-    # object is not mutated.
-    def method_copy(name, *params)
-      esql = clone
-      esql.instance_variable_set('@query', esql.instance_variable_get('@query').clone)
-      esql.send("#{name}!", *params)
-      esql
-    end
-
     # Helper to build the LOOKUP JOIN part of the query.
     def build_lookup_joins
       joins = @lookup_joins.map { |a| a.map { |k, v| "LOOKUP JOIN #{k} ON #{v}" } }.flatten.join(' | ')
       " | #{joins}"
-    end
-
-    # Helper to build the String for the simpler functions.
-    # These are of the form 'key.upcase value' like 'DROP value'
-    # If metadata has been set, it needs to be added to FROM. There's a possibility there'll be more
-    # special cases like this in the future, they can be added here.
-    def build_string_query
-      @query.map do |k, v|
-        if k == :from && !@metadata.empty?
-          "#{k.upcase} #{v} METADATA #{@metadata.join(', ')}"
-        else
-          "#{k.upcase} #{v}"
-        end
-      end.join(' | ')
     end
   end
   # rubocop:enable Metrics/ClassLength

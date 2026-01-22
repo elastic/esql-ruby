@@ -22,8 +22,8 @@ describe Elastic::ESQL do
     it 'builds a fork query' do
       esql = Elastic::ESQL.from('employees')
                           .fork([
-                                  Elastic::ESQL.new.where('emp_no == 10001'),
-                                  Elastic::ESQL.new.where('emp_no == 10002')
+                                  Elastic::FORK.new.where('emp_no == 10001'),
+                                  Elastic::FORK.new.where('emp_no == 10002')
                                 ])
                           .keep('emp_no', '_fork')
                           .sort('emp_no')
