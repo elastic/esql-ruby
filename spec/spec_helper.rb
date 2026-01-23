@@ -16,4 +16,7 @@
 # under the License.
 
 require 'elastic/esql'
+
+# rubocop:disable Style/MixinUsage
 include Elastic
+# rubocop:enable Style/MixinUsage

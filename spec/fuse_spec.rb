@@ -17,33 +17,35 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'FUSE' do
     let(:esql) do
       ESQL.from('books')
-        .metadata('_id, _index, _score')
-        .fork([
-                FORK.new.where('title == "Shakespeare"').sort('_score').desc,
-                FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
-              ])
+          .metadata('_id, _index, _score')
+          .fork([
+                  FORK.new.where('title == "Shakespeare"').sort('_score').desc,
+                  FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
+                ])
     end
 
     it 'builds a fuse query with no parameters' do
       expect(esql.fuse.to_s).to eq(
-                                  'FROM books METADATA _id, _index, _score ' \
-                                  '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
-                                  '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
-                                  '| FUSE'
-                                )
+        'FROM books METADATA _id, _index, _score ' \
+        '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
+        '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
+        '| FUSE'
+      )
     end
 
     it 'builds a fuse LINEAR query' do
       expect(esql.fuse(:linear).to_s).to eq(
-                                           'FROM books METADATA _id, _index, _score ' \
-                                           '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
-                                           '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
-                                           '| FUSE LINEAR'
-                                )
+        'FROM books METADATA _id, _index, _score ' \
+        '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
+        '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
+        '| FUSE LINEAR'
+      )
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

@@ -28,12 +28,12 @@ describe Elastic::ESQL do
                           .keep('emp_no', '_fork')
                           .sort('emp_no')
       expect(esql.query).to eq(
-                              'FROM employees ' \
-                              '| FORK (WHERE emp_no == 10001) ' \
-                              '(WHERE emp_no == 10002) ' \
-                              '| KEEP emp_no, _fork ' \
-                              '| SORT emp_no'
-                            )
+        'FROM employees ' \
+        '| FORK (WHERE emp_no == 10001) ' \
+        '(WHERE emp_no == 10002) ' \
+        '| KEEP emp_no, _fork ' \
+        '| SORT emp_no'
+      )
     end
   end
 end

@@ -40,7 +40,6 @@ module Elastic
   # @example
   #    Elastic::ESQL.from('sample_data').sort_descending('@timestamp').limit(3).to_s
   #    # => FROM 'sample_data' | SORT @timestamp desc | LIMIT 3
-  # rubocop:disable Metrics/ClassLength
   class ESQL
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, Keep, LookupJoin, Metadata,
@@ -174,5 +173,4 @@ module Elastic
       " | #{joins}"
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
