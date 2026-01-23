@@ -143,6 +143,46 @@ Elastic::ESQL.from('sample_data').eval({ height_feet: 'height * 3.281', height_c
 # => "FROM sample_data | EVAL height_feet = height * 3.281, height_cm = height * 100"
 ```
 
+### FORK
+
+The [`FORK`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fork) processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table.
+
+```ruby
+esql = Elastic::ESQL.from('employees')
+                    .fork([
+                            Elastic::FORK.new.where('emp_no == 10001'),
+                            Elastic::FORK.new.where('emp_no == 10002')
+                          ])
+                    .keep('emp_no', '_fork')
+                    .sort('emp_no')
+=> "FROM employees | FORK (WHERE emp_no == 10001) (WHERE emp_no == 10002) | KEEP emp_no, _fork
+| SORT emp_no"
+```
+
+### FUSE
+
+The [`FUSE`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fuse) processing command merges rows from multiple result sets and assigns new relevance scores.
+
+
+```ruby
+include Elastic
+
+ESQL.from('books')
+    .metadata('_id, _index, _score')
+    .fork(
+      [
+        FORK.new.where('title == "Shakespeare"').sort('_score').desc,
+        FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
+      ]
+    )
+    .fuse(:linear).to_s
+=> "FROM books METADATA _id, _index, _score
+| FORK
+(WHERE title == \"Shakespeare\" | SORT _score DESC)
+(WHERE semantic_title == \"Shakespeare\" | SORT _score DESC)
+| FUSE LINEAR"
+```
+
 ### GROK
 
 [GROK](https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok) enables you to extract structured data out of a string.

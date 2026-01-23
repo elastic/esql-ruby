@@ -1,3 +1,48 @@
+# 0.4.0
+
+## Adds `FORK` command
+
+The [`FORK`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fork) processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table.
+
+Syntax:
+
+```ruby
+esql = Elastic::ESQL.from('employees')
+                    .fork([
+                            Elastic::FORK.new.where('emp_no == 10001'),
+                            Elastic::FORK.new.where('emp_no == 10002')
+                          ])
+                    .keep('emp_no', '_fork')
+                    .sort('emp_no')
+=> "FROM employees | FORK (WHERE emp_no == 10001) (WHERE emp_no == 10002) | KEEP emp_no, _fork
+| SORT emp_no"
+```
+
+## Adds `FUSE` command
+
+The [`FUSE`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fuse) processing command merges rows from multiple result sets and assigns new relevance scores.
+
+Syntax:
+
+```ruby
+include Elastic
+
+ESQL.from('books')
+    .metadata('_id, _index, _score')
+    .fork(
+      [
+        FORK.new.where('title == "Shakespeare"').sort('_score').desc,
+        FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
+      ]
+    )
+    .fuse(:linear).to_s
+=> "FROM books METADATA _id, _index, _score
+| FORK
+(WHERE title == \"Shakespeare\" | SORT _score DESC)
+(WHERE semantic_title == \"Shakespeare\" | SORT _score DESC)
+| FUSE LINEAR"
+```
+
 # 0.3.0
 
 ## Adds `TS` source command
