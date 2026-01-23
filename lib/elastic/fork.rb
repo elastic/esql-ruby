@@ -18,7 +18,8 @@ require_relative 'queryable'
 require_relative 'util'
 
 module Elastic
-  # The FORK processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table.
+  # The FORK processing command creates multiple execution branches to operate on the same input
+  # data and combines the results in a single output table.
   # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/fork
   module Fork
     # @param [Array<String>|String] columns A comma-separated list of columns to remove.
@@ -29,6 +30,7 @@ module Elastic
     end
   end
 
+  # Fork querying object that supports WHERE, SORT, DESC to pass to FORK command
   class FORK
     include Queryable
     include Util
