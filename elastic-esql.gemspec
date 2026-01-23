@@ -17,7 +17,7 @@
 
 Gem::Specification.new do |s|
   s.name          = 'elastic-esql'
-  s.version       = '0.3.0'
+  s.version       = '0.4.0'
   s.authors       = ['Fernando Briano']
   s.summary       = 'Elastic ES|QL Query builder'
   s.license       = 'Apache-2.0'
