@@ -23,7 +23,7 @@ describe Elastic::ESQL do
 
     it 'accepts a Hash as a parameter' do
       esql.row({ a: 1, b: 'two', c: 'null' })
-      expect(esql.query).to eq 'FROM sample_data | ROW a = 1, b = two, c = null'
+      expect(esql.query).to eq 'FROM sample_data | ROW a = 1, b = "two", c = null'
     end
 
     it 'raises error if the parameters are wrong' do
@@ -34,7 +34,7 @@ describe Elastic::ESQL do
       it 'accepts a Hash as a parameter' do
         expect(
           ESQL.row({ a: 1, b: 'two', c: 'null' }).to_s
-        ).to eq 'ROW a = 1, b = two, c = null'
+        ).to eq 'ROW a = 1, b = "two", c = null'
       end
     end
   end
