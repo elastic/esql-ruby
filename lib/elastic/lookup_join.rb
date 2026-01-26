@@ -37,7 +37,8 @@ module Elastic
     #   => FROM system_metrics | LOOKUP JOIN host_inventory ON host.name | LOOKUP JOIN ownerships ON host.name
     #
     def lookup_join!(lookup_index, field_name)
-      @lookup_joins << { lookup_index.to_sym => field_name }
+      @query[:lookup_joins] ||= []
+      @query[:lookup_joins] << { lookup_index.to_sym => field_name }
       self
     end
 

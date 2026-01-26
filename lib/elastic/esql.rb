@@ -52,7 +52,6 @@ module Elastic
       @query = {}
       @custom = []
       @metadata = []
-      @lookup_joins = []
     end
 
     # Function to build the ES|QL formatted query and return it as a String.
@@ -63,7 +62,6 @@ module Elastic
 
       @query[:enrich] = @enriches.map(&:to_query).join('| ') if @enriches
       string_query = build_string_query
-      string_query.concat(build_lookup_joins) unless @lookup_joins.empty?
       string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
       string_query
     end
@@ -165,12 +163,6 @@ module Elastic
       SOURCE_COMMANDS.map { |c| @query.each_key { |k| return true if k == c } }
 
       false
-    end
-
-    # Helper to build the LOOKUP JOIN part of the query.
-    def build_lookup_joins
-      joins = @lookup_joins.map { |a| a.map { |k, v| "LOOKUP JOIN #{k} ON #{v}" } }.flatten.join(' | ')
-      " | #{joins}"
     end
   end
 end

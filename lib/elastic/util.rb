@@ -30,17 +30,29 @@ module Elastic
     # Helper to build the String for the simpler functions.
     # These are of the form 'key.upcase value' like 'DROP value'
     # If metadata has been set, it needs to be added to FROM. There's a possibility there'll be more
-    # special cases like this in the future, they can be added here.
+    # special cases like this in the future, they can be added here. (I was right)
+    # Need to disable Rubocop, this is a complex and long method by nature:
+    # rubocop:disable Metrics
     def build_string_query
       @query.map do |k, v|
         if k == :from && !@metadata.empty?
           "#{k.upcase} #{v} METADATA #{@metadata.join(', ')}"
+        elsif k == :lookup_joins
+          build_lookup_joins(v)
         elsif k && (v == '' || v.nil?)
           k.upcase
         else
           "#{k.upcase} #{v}"
         end
       end.join(' | ')
+    end
+    # rubocop:enable Metrics
+
+    private
+
+    # Helper to build the LOOKUP JOIN part of the query.
+    def build_lookup_joins(joins)
+      joins.map { |a| a.map { |k, v| "LOOKUP JOIN #{k} ON #{v}" } }.flatten.join(' | ')
     end
   end
 end
