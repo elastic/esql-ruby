@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'LOOKUP JOIN' do
     let(:esql) { ESQL.from('sample_data') }
@@ -38,5 +39,28 @@ describe Elastic::ESQL do
     it 'does not mutate when using lookup_join' do
       expect(esql.lookup_join('threat_list', 'field_name').object_id).not_to eq esql.object_id
     end
+
+    context 'Docs examples' do
+      # Source: https://www.elastic.co/docs/reference/query-languages/esql/esql-lookup-join
+      it 'builds the queries ffrom the' do
+        expect(
+          ESQL.from('firewall_logs')
+            .lookup_join('threat_list', 'source.ip')
+            .where('threat_level IS NOT NULL')
+            .sort('timestamp')
+            .keep('source.ip', 'action', 'threat_type', 'threat_level')
+            .limit(10)
+            .query
+        ).to eq(
+          'FROM firewall_logs ' \
+          '| LOOKUP JOIN threat_list ON source.ip ' \
+          '| WHERE threat_level IS NOT NULL ' \
+          '| SORT timestamp ' \
+          '| KEEP source.ip, action, threat_type, threat_level ' \
+          '| LIMIT 10'
+        )
+      end
+    end
   end
 end
+# rubocop:enable Metrics/BlockLength
