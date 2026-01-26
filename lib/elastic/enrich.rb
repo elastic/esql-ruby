@@ -67,11 +67,15 @@ module Elastic
       self
     end
 
-    def to_s
+    def to_query
       query = [@policy]
       query << "ON #{@match_field}" if @match_field
       query << "WITH #{@fields}" if @fields
       query.join(' ')
+    end
+
+    def to_s
+      @esql.to_s
     end
 
     private
