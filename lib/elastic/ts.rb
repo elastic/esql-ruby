@@ -28,7 +28,7 @@ module Elastic
     #
     #   query = Elastic::ESQL.ts(index_pattern, ['_index', '_id'])
     #
-    # @see https://www.elastic.co/docs/reference/query-languages/esql/esql-metadata-fields
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/ts
     #
     def ts(index_pattern, fields = nil)
       @query[:ts] = if fields
