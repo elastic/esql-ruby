@@ -31,6 +31,9 @@ module Elastic
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/source-commands#esql-row
     #
     def row(params)
+      params.map do |k, v|
+        params[k] = "\"#{v}\"" if v.is_a?(String) && !v.match?(/"/) && v != 'null'
+      end
       hash_param(:row, params)
     end
   end
