@@ -20,13 +20,13 @@ require 'spec_helper'
 describe Elastic::ESQL do
   context 'FORK' do
     it 'builds a fork query' do
-      esql = Elastic::ESQL.from('employees')
-                          .fork([
-                                  Elastic::FORK.new.where('emp_no == 10001'),
-                                  Elastic::FORK.new.where('emp_no == 10002')
-                                ])
-                          .keep('emp_no', '_fork')
-                          .sort('emp_no')
+      esql = ESQL.from('employees')
+                 .fork([
+                         FORK.new.where('emp_no == 10001'),
+                         FORK.new.where('emp_no == 10002')
+                       ])
+                 .keep('emp_no', '_fork')
+                 .sort('emp_no')
       expect(esql.query).to eq(
         'FROM employees ' \
         '| FORK (WHERE emp_no == 10001) ' \

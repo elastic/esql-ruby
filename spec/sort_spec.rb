@@ -22,44 +22,44 @@ describe Elastic::ESQL do
   context 'SORT' do
     it 'uses regular sort' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').to_s
+        ESQL.from('sample_data').sort('@timestamp').to_s
       ).to eq 'FROM sample_data | SORT @timestamp'
     end
 
     it 'sorts ascending' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').ascending.to_s
+        ESQL.from('sample_data').sort('@timestamp').ascending.to_s
       ).to eq 'FROM sample_data | SORT @timestamp ASC'
     end
 
     it 'sorts descending' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.to_s
+        ESQL.from('sample_data').sort('@timestamp').descending.to_s
       ).to eq 'FROM sample_data | SORT @timestamp DESC'
     end
 
     it 'uses null last' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_last.to_s
+        ESQL.from('sample_data').sort('@timestamp').descending.nulls_last.to_s
       ).to eq 'FROM sample_data | SORT @timestamp DESC NULLS LAST'
     end
 
     it 'uses null first' do
       expect(
-        Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.to_s
+        ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.to_s
       ).to eq 'FROM sample_data | SORT @timestamp DESC NULLS FIRST'
     end
 
     context 'Errors' do
       it 'raises an error when using asc without sorting' do
         expect do
-          Elastic::ESQL.from('sample_data').ascending
+          ESQL.from('sample_data').ascending
         end.to raise_error ArgumentError
       end
 
       it 'raises an error when using desc without sorting' do
         expect do
-          Elastic::ESQL.from('sample_data').descending
+          ESQL.from('sample_data').descending
         end.to raise_error ArgumentError
       end
     end
@@ -67,31 +67,31 @@ describe Elastic::ESQL do
     context 'Aliases' do
       it 'uses asc alias' do
         expect(
-          Elastic::ESQL.from('sample_data').sort('@timestamp').asc.to_s
+          ESQL.from('sample_data').sort('@timestamp').asc.to_s
         ).to eq 'FROM sample_data | SORT @timestamp ASC'
       end
 
       it 'uses desc alias' do
         expect(
-          Elastic::ESQL.from('sample_data').sort('@timestamp').desc.to_s
+          ESQL.from('sample_data').sort('@timestamp').desc.to_s
         ).to eq 'FROM sample_data | SORT @timestamp DESC'
       end
 
       it 'mutates with desc!' do
-        esql = Elastic::ESQL.from('sample_data')
+        esql = ESQL.from('sample_data')
         esql.sort!('@timestamp').desc!
         expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp DESC'
       end
 
       it 'mutates with asc!' do
-        esql = Elastic::ESQL.from('sample_data')
+        esql = ESQL.from('sample_data')
         esql.sort!('@timestamp').asc!
         expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp ASC'
       end
     end
 
     context 'mutating the object' do
-      let(:esql) { Elastic::ESQL.from('sample_data') }
+      let(:esql) { ESQL.from('sample_data') }
       it 'changes the object when using !' do
         esql.sort!('@timestamp').descending!
         expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp DESC'

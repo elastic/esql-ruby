@@ -21,35 +21,35 @@ require 'spec_helper'
 describe Elastic::ESQL do
   context 'TS' do
     it 'shows the expected queries' do
-      expect(Elastic::ESQL.ts('sample').query).to eq 'TS sample'
+      expect(ESQL.ts('sample').query).to eq 'TS sample'
     end
 
     it 'instantiates' do
-      expect(Elastic::ESQL.ts('sample')).to be_a Elastic::ESQL
+      expect(ESQL.ts('sample')).to be_a ESQL
     end
 
     it 'allows changing TS' do
-      esql = Elastic::ESQL.ts('sample')
+      esql = ESQL.ts('sample')
       esql.ts('something_else')
       expect(esql.query).to eq 'TS something_else'
     end
 
     it 'accepts fields as Array' do
       fields = %w[_index _id]
-      esql = Elastic::ESQL.ts('sample', fields)
+      esql = ESQL.ts('sample', fields)
       expect(esql.query).to eq 'TS sample METADATA _index, _id'
     end
 
     it 'accepts fields as String' do
       fields = '_index, _id'
-      esql = Elastic::ESQL.ts('sample', fields)
+      esql = ESQL.ts('sample', fields)
       expect(esql.query).to eq 'TS sample METADATA _index, _id'
     end
 
     it 'raises error if the parameters are wrong' do
       expect do
         fields = { a: '_index ' }
-        Elastic::ESQL.ts('sample', fields)
+        ESQL.ts('sample', fields)
       end.to raise_error ArgumentError
     end
   end

@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'ROW' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'accepts a Hash as a parameter' do
       esql.row({ a: 1, b: 'two', c: 'null' })
@@ -33,7 +33,7 @@ describe Elastic::ESQL do
     context 'instantiation' do
       it 'accepts a Hash as a parameter' do
         expect(
-          Elastic::ESQL.row({ a: 1, b: 'two', c: 'null' }).to_s
+          ESQL.row({ a: 1, b: 'two', c: 'null' }).to_s
         ).to eq 'ROW a = 1, b = two, c = null'
       end
     end

@@ -21,7 +21,7 @@ require 'spec_helper'
 describe Elastic::ESQL do
   context 'STATS' do
     it 'writes a simple from query' do
-      esql = Elastic::ESQL.from('employees').stats(column: 'avg_lang', avg: 'languages')
+      esql = ESQL.from('employees').stats(column: 'avg_lang', avg: 'languages')
       expect(esql.query).to eq 'FROM employees | STATS avg_lang = AVG(languages)'
     end
 
@@ -30,13 +30,13 @@ describe Elastic::ESQL do
         { column: 'avg_lang', avg: 'languages' },
         { column: 'max_lang', max: 'languages' }
       ]
-      esql = Elastic::ESQL.from('employees').stats(stats)
+      esql = ESQL.from('employees').stats(stats)
       expect(esql.query).to eq 'FROM employees | STATS avg_lang = AVG(languages), max_lang = MAX(languages)'
     end
 
     it 'writes a stats query with column, by, where and functions' do
       stat = { column: 'fernando', count: 'emp_no', by: 'language', where: 'a = 1' }
-      esql = Elastic::ESQL.from('sample_data').stats(stat)
+      esql = ESQL.from('sample_data').stats(stat)
       expect(esql.query).to eq 'FROM sample_data | STATS fernando = COUNT(emp_no) WHERE a = 1 BY language'
     end
 
@@ -45,7 +45,7 @@ describe Elastic::ESQL do
         { column: 'avg50s', avg: 'salary::LONG', where: 'birth_date < "1960-01-01"' },
         { column: 'avg60s', avg: 'salary::LONG', where: 'birth_date >= "1960-01-01"' }
       ]
-      esql = Elastic::ESQL.from('employees').stats(stats).by('gender').sort('gender')
+      esql = ESQL.from('employees').stats(stats).by('gender').sort('gender')
       expect(esql.query).to eq(
         'FROM employees | ' \
         'STATS avg50s = AVG(salary)::LONG ' \
@@ -56,8 +56,8 @@ describe Elastic::ESQL do
     end
 
     it 'writes a query with WHERE' do
-      esql = Elastic::ESQL.from('employees').where('emp_no == 10020').stats({ column: 'is_absent',
-                                                                              absent: 'languages' })
+      esql = ESQL.from('employees').where('emp_no == 10020').stats({ column: 'is_absent',
+                                                                     absent: 'languages' })
       expect(esql.query).to eq(
         'FROM employees | WHERE emp_no == 10020 | STATS is_absent = ABSENT(languages)'
       )
@@ -65,7 +65,7 @@ describe Elastic::ESQL do
 
     it 'accepts nested functions' do
       stats = { column: 'distinct_word_count', count_distinct: { split: 'words, ";"' } }
-      esql = Elastic::ESQL.row(words: '"foo;bar;baz;qux;quux;foo"').stats(stats)
+      esql = ESQL.row(words: '"foo;bar;baz;qux;quux;foo"').stats(stats)
       expect(esql.query).to eq(
         'ROW words = "foo;bar;baz;qux;quux;foo" ' \
         '| STATS distinct_word_count = COUNT_DISTINCT(SPLIT(words, ";"))'
@@ -74,13 +74,13 @@ describe Elastic::ESQL do
 
     it 'uses two functions' do
       stats = { median: 'salary', median_absolute_deviation: 'salary' }
-      esql = Elastic::ESQL.from('employees').stats(stats)
+      esql = ESQL.from('employees').stats(stats)
       expect(esql.query).to eq('FROM employees | STATS MEDIAN(salary), MEDIAN_ABSOLUTE_DEVIATION(salary)')
     end
 
     it 'uses TS' do
       stats = { avg: { rate: 'requests, 10m' } }
-      esql = Elastic::ESQL.ts('metrics').where('TRANGE(1h)').stats(stats).by('TBUCKET(1m), host')
+      esql = ESQL.ts('metrics').where('TRANGE(1h)').stats(stats).by('TBUCKET(1m), host')
       expect(esql.query).to eq(
         'TS metrics ' \
         '| WHERE TRANGE(1h) ' \
@@ -89,11 +89,11 @@ describe Elastic::ESQL do
     end
 
     it 'uses more TS' do
-      esql = Elastic::ESQL.ts('k8s')
-                          .where('cluster == "prod"')
-                          .where('pod == "two"')
-                          .stats({ column: 'events_received', max: { absent_over_time: 'events_received' } })
-                          .by('pod, time_bucket = TBUCKET(2 minute)')
+      esql = ESQL.ts('k8s')
+                 .where('cluster == "prod"')
+                 .where('pod == "two"')
+                 .stats({ column: 'events_received', max: { absent_over_time: 'events_received' } })
+                 .by('pod, time_bucket = TBUCKET(2 minute)')
       # https://www.elastic.co/docs/reference/query-languages/esql/functions-operators/time-series-aggregation-functions
       expect(esql.query).to eq(
         'TS k8s | WHERE cluster == "prod" AND pod == "two" ' \
@@ -109,7 +109,7 @@ describe Elastic::ESQL do
         by: 'pod, time_bucket = TBUCKET(2 minute)'
       }
       expect(
-        Elastic::ESQL.ts('k8s')
+        ESQL.ts('k8s')
           .where('cluster == "prod"')
           .where('pod == "two"')
           .stats(stats).query
@@ -120,7 +120,7 @@ describe Elastic::ESQL do
       )
 
       expect(
-        Elastic::ESQL.ts('k8s')
+        ESQL.ts('k8s')
           .stats(
             [
               { column: 'distincts', count_distinct: { count_distinct_over_time: 'network.cost' } },
