@@ -49,7 +49,7 @@ query.to_s
 
 ## API
 
-📜 Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`.
+📜 Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`. You can also check out [the unit](https://github.com/elastic/esql-ruby/tree/main/spec) for even more usage examples.
 
 ### Source Commands (FROM, ROW, SHOW, TS)
 
