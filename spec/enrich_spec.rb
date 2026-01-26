@@ -24,7 +24,7 @@ describe Elastic::ESQL do
 
     it 'initializes a single enrich' do
       esql.enrich('policy')
-      expect(esql.to_s).to eq 'FROM sample_data | ENRICH policy'
+      expect(esql.query).to eq 'FROM sample_data | ENRICH policy'
     end
 
     it 'builds an enrich with on' do
@@ -39,12 +39,12 @@ describe Elastic::ESQL do
 
     it 'builds an enrich and `with` with a Hash parameter' do
       esql.enrich('policy').with({ name: 'language_name' })
-      expect(esql.to_s).to eq 'FROM sample_data | ENRICH policy WITH name = language_name'
+      expect(esql.query).to eq 'FROM sample_data | ENRICH policy WITH name = language_name'
     end
 
     it 'builds an enrich and `with` with a Hash parameter and more params' do
       esql.enrich('policy').with({ name: 'language_name', coso: 'thing' })
-      expect(esql.to_s).to eq 'FROM sample_data | ENRICH policy WITH name = language_name, coso = thing'
+      expect(esql.query).to eq 'FROM sample_data | ENRICH policy WITH name = language_name, coso = thing'
     end
 
     it 'builds an enrich with on and with' do
@@ -54,7 +54,24 @@ describe Elastic::ESQL do
 
     it 'works fine when continuing chainging' do
       esql.enrich('policy').sort!('@timestamp')
-      expect(esql.to_s).to eq 'FROM sample_data | SORT @timestamp | ENRICH policy'
+      expect(esql.query).to eq 'FROM sample_data | SORT @timestamp | ENRICH policy'
+    end
+
+    # Source: https://www.elastic.co/docs/reference/query-languages/esql/esql-enrich-data
+    it 'builds the examples from the docs page' do
+      expect(
+        ESQL.row(language_code: '"1"').enrich('languages_policy').to_s
+      ).to eq(
+        'ROW language_code = "1" ' \
+      '| ENRICH languages_policy'
+      )
+
+      expect(
+        ESQL.row(a: '"1"').enrich('languages_policy').on('a').with('name = language_name').to_s
+      ).to eq(
+        'ROW a = "1" ' \
+        '| ENRICH languages_policy ON a WITH name = language_name'
+      )
     end
   end
 end

@@ -61,7 +61,7 @@ module Elastic
     def query
       raise ArgumentError, 'No source command found' unless source_command_present?
 
-      @query[:enrich] = @enriches.join('| ') if @enriches
+      @query[:enrich] = @enriches.map(&:to_query).join('| ') if @enriches
       string_query = build_string_query
       string_query.concat(build_lookup_joins) unless @lookup_joins.empty?
       string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
