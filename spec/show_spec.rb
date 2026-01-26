@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'SHOW' do
-    let(:esql) { Elastic::ESQL.new }
+    let(:esql) { ESQL.new }
 
     it 'returns SHOW INFO' do
       expect(esql.show).to eq 'SHOW INFO'

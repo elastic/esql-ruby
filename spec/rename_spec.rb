@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'RENAME' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'accepts a Hash as a parameter' do
       esql.rename!({ first_name: 'fn', last_name: 'ln' })

@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'GROK' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'accepts input and pattern as parameters' do
       esql.grok!('a', '%{date} - %{msg} - %{ip}')

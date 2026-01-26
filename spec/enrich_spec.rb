@@ -20,7 +20,7 @@ require 'spec_helper'
 # rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'ENRICH' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'initializes a single enrich' do
       esql.enrich('policy')

@@ -20,7 +20,7 @@ require 'spec_helper'
 # rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'when initializing' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'shows the expected queries' do
       expect(esql.to_s).to eq 'FROM sample_data'
@@ -59,7 +59,7 @@ describe Elastic::ESQL do
     end
 
     it 'raises error if no source command specified' do
-      esql = Elastic::ESQL.new
+      esql = ESQL.new
       expect { esql.query }.to raise_error ArgumentError
     end
   end

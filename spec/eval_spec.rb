@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'EVAL' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'accepts a Hash as a parameter' do
       esql.eval!({ height_feet: 'height * 3.281', height_cm: 'height * 100' })

@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'Custom String' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'accepts a custom string as a parameter' do
       esql.custom!('| MY_VALUE = "test value"')
