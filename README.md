@@ -47,9 +47,23 @@ query.to_s
 # => "FROM sample_data | LIMIT 2 | SORT @timestamp"
 ```
 
+You can import the Elastic module to use the `ESQL` and `FORK` classes directly:
+
+```ruby
+include Elastic
+
+esql = ESQL.from('employees')
+           .fork([
+                   FORK.new.where('emp_no == 10001'),
+                   FORK.new.where('emp_no == 10002')
+                 ])
+           .keep('emp_no', '_fork')
+           .sort('emp_no')
+```
+
 ## API
 
-📜 Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`. You can also check out [the unit](https://github.com/elastic/esql-ruby/tree/main/spec) for even more usage examples.
+📜 Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`. You can also check out [the tests](https://github.com/elastic/esql-ruby/tree/main/spec) for even more usage examples.
 
 ### Source Commands (FROM, ROW, SHOW, TS)
 
@@ -155,8 +169,7 @@ esql = Elastic::ESQL.from('employees')
                           ])
                     .keep('emp_no', '_fork')
                     .sort('emp_no')
-=> "FROM employees | FORK (WHERE emp_no == 10001) (WHERE emp_no == 10002) | KEEP emp_no, _fork
-| SORT emp_no"
+# => "FROM employees | FORK (WHERE emp_no == 10001) (WHERE emp_no == 10002) | KEEP emp_no, _fork | SORT emp_no"
 ```
 
 ### FUSE
@@ -176,11 +189,7 @@ ESQL.from('books')
       ]
     )
     .fuse(:linear).to_s
-=> "FROM books METADATA _id, _index, _score
-| FORK
-(WHERE title == \"Shakespeare\" | SORT _score DESC)
-(WHERE semantic_title == \"Shakespeare\" | SORT _score DESC)
-| FUSE LINEAR"
+# => "FROM books METADATA _id, _index, _score | FORK (WHERE title == \"Shakespeare\" | SORT _score DESC) (WHERE semantic_title == \"Shakespeare\" | SORT _score DESC) | FUSE LINEAR"
 ```
 
 ### GROK

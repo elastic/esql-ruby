@@ -20,7 +20,7 @@ require 'spec_helper'
 # rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'KEEP' do
-    let(:esql) { Elastic::ESQL.from('sample_data') }
+    let(:esql) { ESQL.from('sample_data') }
 
     it 'accepts 2 strings as a parameter' do
       esql.keep!('column1', 'column2')
