@@ -1,5 +1,7 @@
 # 0.4.0
 
+This update adds some new ES|QL functions, tests for more specific uses, general documentation updates and code refactoring.
+
 ## Adds `FORK` command
 
 The [`FORK`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fork) processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table.
@@ -42,6 +44,14 @@ ESQL.from('books')
 (WHERE semantic_title == \"Shakespeare\" | SORT _score DESC)
 | FUSE LINEAR"
 ```
+
+## `ENRICH` code refactor
+
+Example code snippets from the official documentation were added to the tests. This resulted in some refactors and updates that made the code for `enrich` more robust. To build the query, the `Enrich` object now uses a new method name `to_query`, and `to_s` calls ESQL's function, so the results are more cohesive when chaining functions and using `to_s`.
+
+## `LOOKUP JOIN` code refactor
+
+The `lookup_join` code is now more flexible. It's part of `@query` in the `ESQL` object, so it's added to the query in the order it is chained to the object. The lookup join array is now parsed in `Util`, a helper `method build_lookup_joins` is called from `build_string_query`.
 
 # 0.3.0
 
