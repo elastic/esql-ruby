@@ -47,15 +47,15 @@ query.to_s
 # => "FROM sample_data | LIMIT 2 | SORT @timestamp"
 ```
 
-You can import the Elastic module to use the `ESQL` and `FORK` classes directly:
+You can import the Elastic module to use the `ESQL` class directly:
 
 ```ruby
 include Elastic
 
 esql = ESQL.from('employees')
            .fork([
-                   FORK.new.where('emp_no == 10001'),
-                   FORK.new.where('emp_no == 10002')
+                   ESQL.branch.where('emp_no == 10001'),
+                   ESQL.branch.where('emp_no == 10002')
                  ])
            .keep('emp_no', '_fork')
            .sort('emp_no')
@@ -164,8 +164,8 @@ The [`FORK`](https://www.elastic.co/docs/reference/query-languages/esql/commands
 ```ruby
 esql = Elastic::ESQL.from('employees')
                     .fork([
-                            Elastic::FORK.new.where('emp_no == 10001'),
-                            Elastic::FORK.new.where('emp_no == 10002')
+                            Elastic::ESQL.branch.where('emp_no == 10001'),
+                            Elastic::ESQL.branch.where('emp_no == 10002')
                           ])
                     .keep('emp_no', '_fork')
                     .sort('emp_no')
@@ -184,8 +184,8 @@ ESQL.from('books')
     .metadata('_id, _index, _score')
     .fork(
       [
-        FORK.new.where('title == "Shakespeare"').sort('_score').desc,
-        FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
+        ESQL.branch.where('title == "Shakespeare"').sort('_score').desc,
+        ESQL.branch.where('semantic_title == "Shakespeare"').sort('_score').desc
       ]
     )
     .fuse(:linear).to_s

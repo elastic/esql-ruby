@@ -11,8 +11,8 @@ Syntax:
 ```ruby
 esql = Elastic::ESQL.from('employees')
                     .fork([
-                            Elastic::FORK.new.where('emp_no == 10001'),
-                            Elastic::FORK.new.where('emp_no == 10002')
+                            Elastic::ESQL.branch.where('emp_no == 10001'),
+                            Elastic::ESQL.branch.where('emp_no == 10002')
                           ])
                     .keep('emp_no', '_fork')
                     .sort('emp_no')
@@ -33,8 +33,8 @@ ESQL.from('books')
     .metadata('_id, _index, _score')
     .fork(
       [
-        FORK.new.where('title == "Shakespeare"').sort('_score').desc,
-        FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
+        ESQL.branch.where('title == "Shakespeare"').sort('_score').desc,
+        ESQL.branch.where('semantic_title == "Shakespeare"').sort('_score').desc
       ]
     )
     .fuse(:linear).to_s

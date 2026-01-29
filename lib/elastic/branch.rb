@@ -15,27 +15,21 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'spec_helper'
+require_relative 'queryable'
+require_relative 'util'
 
-describe Elastic::ESQL do
-  context 'FORK' do
-    it 'builds a fork query' do
-      esql = ESQL.from('employees')
-                 .fork(
-                   [
-                     ESQL.branch.where('emp_no == 10001'),
-                     ESQL.branch.where('emp_no == 10002')
-                   ]
-                 )
-                 .keep('emp_no', '_fork')
-                 .sort('emp_no')
-      expect(esql.query).to eq(
-        'FROM employees ' \
-        '| FORK (WHERE emp_no == 10001) ' \
-        '(WHERE emp_no == 10002) ' \
-        '| KEEP emp_no, _fork ' \
-        '| SORT emp_no'
-      )
+module Elastic
+  # Querying object that supports WHERE, SORT, DESC to pass to FORK command
+  class Branch
+    include Queryable
+    include Util
+
+    def initialize
+      @query = {}
+    end
+
+    def query
+      build_string_query
     end
   end
 end
