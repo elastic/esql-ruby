@@ -4,7 +4,7 @@ This update adds some new ES|QL functions, tests for more specific uses, general
 
 ## Adds `FORK` command
 
-The [`FORK`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fork) processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table.
+The [`FORK`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fork) processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table. You can create new branches for `fork` with `ESQL.branch`. This behavior is consistent with other ES|QL query builders in PHP, Python and JavaScript.
 
 Syntax:
 
