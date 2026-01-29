@@ -69,7 +69,8 @@ module Elastic
     def validate_function(stat)
       stat.keys.map { |f| return true if AGG_FUNCTIONS.include?(f) || TS_AGG_FUNCTIONS.include?(f) }
 
-      raise ArgumentError 'No expression specified'
+      raise ArgumentError,
+            'No valid expression specified. Use an Aggregation function or TS aggregation function to compute.'
     end
 
     def find_expressions(stat)
