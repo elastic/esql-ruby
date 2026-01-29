@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'branch'
 require_relative 'change_point'
 require_relative 'custom'
 require_relative 'dissect'
@@ -133,6 +134,10 @@ module Elastic
       alias chicken 🐔
     end
     # rubocop:enable Naming/MethodName, Naming/BinaryOperatorParameterName
+
+    def self.branch
+      Branch.new
+    end
 
     private
 

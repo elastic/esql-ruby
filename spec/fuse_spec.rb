@@ -24,8 +24,8 @@ describe Elastic::ESQL do
       ESQL.from('books')
           .metadata('_id, _index, _score')
           .fork([
-                  FORK.new.where('title == "Shakespeare"').sort('_score').desc,
-                  FORK.new.where('semantic_title == "Shakespeare"').sort('_score').desc
+                  ESQL.branch.where('title == "Shakespeare"').sort('_score').desc,
+                  ESQL.branch.where('semantic_title == "Shakespeare"').sort('_score').desc
                 ])
     end
 
