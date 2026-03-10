@@ -230,6 +230,15 @@ Elastic::ESQL.from('system_metrics')
 # => FROM system_metrics | LOOKUP JOIN host_inventory ON host.name | LOOKUP JOIN ownerships ON host.name
 ```
 
+### MV_EXPAND
+
+The [MV_EXPAND](https://www.elastic.co/docs/reference/query-languages/esql/commands/mv_expand) processing command expands multivalued columns into one row per value, duplicating other columns.
+
+```ruby
+Elastic::ESQL.row({ a: [1, 2, 3], b: 'b' }).mv_expand('a').query
+=> "ROW a = [1, 2, 3], b = \"b\" | MV_EXPAND a"
+```
+
 ### RENAME
 
 The [RENAME](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-rename) processing command renames one or more columns. Pass in a Hash where keys are the name of columns you want to rename, and the value is the name of the new column:
