@@ -29,6 +29,7 @@ require_relative 'grok'
 require_relative 'keep'
 require_relative 'lookup_join'
 require_relative 'metadata'
+require_relative 'mv_expand'
 require_relative 'queryable'
 require_relative 'rename'
 require_relative 'row'
@@ -44,7 +45,7 @@ module Elastic
   class ESQL
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, Keep, LookupJoin, Metadata,
-      Queryable, Rename, Row, Show, Stats, TS, Util
+      MvExpand, Queryable, Rename, Row, Show, Stats, TS, Util
     ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
