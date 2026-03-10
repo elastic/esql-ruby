@@ -19,7 +19,7 @@ require 'spec_helper'
 
 describe Elastic::ESQL do
   context 'MV_EXPAND' do
-    let(:esql) { ESQL.row({ a: [1,2,3], b: "b", j: ["a","b"] }) }
+    let(:esql) { ESQL.row({ a: [1, 2, 3], b: 'b', j: ['a', 'b'] }) }
 
     it 'builds the query' do
       esql.mv_expand!('a')

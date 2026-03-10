@@ -21,7 +21,7 @@ module Elastic
     # @param [String] column The multivalued column to expand.
     #
     # @example
-    #   esql.row().mv_expand('a')
+    #   esql.row({ a: [1, 2, 3], b: 'b' }).mv_expand('a')
     #
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-change_point
     def mv_expand!(column)
