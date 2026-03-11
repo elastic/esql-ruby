@@ -23,7 +23,7 @@ module Elastic
     # @example
     #   esql.row({ a: [1, 2, 3], b: 'b' }).mv_expand('a')
     #
-    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-change_point
+    # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/mv_expand
     def mv_expand!(column)
       @query[:mv_expand] = column
       self

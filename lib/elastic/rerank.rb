@@ -22,10 +22,11 @@ module Elastic
   class Rerank
     # Once you call +rerank+ on an +Elastic::ESQL+ object, you can chain +on+ and +with+ to it.
     # @param [String] column The name of the output column containing the reranked scores. If not
-    # specified, the results will be stored in a column named _score. If the specified column
-    # already exists, it will be overwritten with the new results. (Optional)
+    #                        specified, the results will be stored in a column named _score. If the
+    #                        specified column already exists, it will be overwritten with the new
+    #                        results. (Optional)
     # @param [String] query The query text used to rerank the documents. This is typically the same
-    # query used in the initial search.
+    #                       query used in the initial search.
     def initialize(esql, query: '', column: nil)
       @column = column
       @query = query
@@ -33,14 +34,15 @@ module Elastic
     end
 
     # @param [Array|String] field One or more fields to use for reranking. These fields should
-    # contain the text that the reranking model will evaluate.
+    #                             contain the text that the reranking model will evaluate.
     def on(fields)
       @fields = fields.is_a?(String) ? fields : fields.join(', ')
       self
     end
 
-    # @param [Hash] my_inference_endpoint - The ID of the inference endpoint to use for the task.
-    # The inference endpoint must be configured with the rerank task type.
+    # @param [Hash] my_inference_endpoint The ID of the inference endpoint to use for the task.
+    #                                     The inference endpoint must be configured with the
+    #                                     rerank task type.
     def with(my_inference_endpoint)
       @inference_id = "WITH { \"inference_id\" : \"#{my_inference_endpoint}\" }"
       self
