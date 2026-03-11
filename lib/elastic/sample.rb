@@ -24,7 +24,7 @@ module Elastic
     #   esql.from('employees').keep('emp_no').sample(0.05)
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/sample
     def sample!(probability)
-      raise ArgumentError.new('probability must be between 0 and 1, exclusive') unless probability.between?(0, 1)
+      raise ArgumentError, 'probability must be between 0 and 1, exclusive' unless probability.between?(0, 1)
 
       @query[:sample] = probability
       self
