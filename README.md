@@ -254,7 +254,16 @@ The [RERANK](https://www.elastic.co/docs/reference/query-languages/esql/commands
 
 ```ruby
 ESQL.from('books').rerank(query: 'Tolkien').on(['title', 'description']).with('test_reranker').query
-=> "FROM books | RERANK \"Tolkien\" ON title, description WITH { \"inference_id\" : \"test_reranker\" }"
+# => "FROM books | RERANK \"Tolkien\" ON title, description WITH { \"inference_id\" : \"test_reranker\" }"
+```
+
+### SAMPLE
+
+The [SAMPLE](https://www.elastic.co/docs/reference/query-languages/esql/commands/sample) command samples a fraction of the table rows.
+
+```ruby
+Elastic::ESQL.from('employees').keep('emp_no').sample(0.05).query
+# => "FROM employees | KEEP emp_no | SAMPLE 0.05"
 ```
 
 ### SORT
