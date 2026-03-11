@@ -32,6 +32,7 @@ require_relative 'metadata'
 require_relative 'mv_expand'
 require_relative 'queryable'
 require_relative 'rename'
+require_relative 'rerank'
 require_relative 'row'
 require_relative 'show'
 require_relative 'stats'
@@ -63,6 +64,7 @@ module Elastic
       raise ArgumentError, 'No source command found' unless source_command_present?
 
       @query[:enrich] = @enriches.map(&:to_query).join('| ') if @enriches
+      @query[:rerank] = @rerank.to_query if @rerank
       string_query = build_string_query
       string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
       string_query
@@ -76,6 +78,14 @@ module Elastic
       enrich = Enrich.new(policy, self)
       @enriches << enrich
       enrich
+    end
+
+    # Creates a new Rerank object to chain with +on+ and +with+. If other method is chained to the
+    # Rerank object, it calls it upon the ESQL object that instantiated it, and returns it.
+    # @return [Elastic::Rerank]
+    def rerank(column: nil, query: '')
+      @rerank = Rerank.new(self, column: column, query: query)
+      @rerank
     end
 
     # Class method to allow static instantiation.
