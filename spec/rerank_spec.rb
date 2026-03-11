@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'RERANK' do
     let(:esql) { ESQL.from('books') }
@@ -43,14 +44,15 @@ describe Elastic::ESQL do
                   .on(['description', 'author'])
                   .with('test_reranker')
       expect(query.query).to eq(
-                               'FROM books METADATA _score ' \
-                               '| WHERE MATCH(description, "hobbit") OR MATCH(author, "Tolkien") ' \
-                               '| SORT _score DESC ' \
-                               '| LIMIT 100 ' \
-                               '| RERANK rerank_score = "hobbit" ' \
-                               'ON description, author ' \
-                               'WITH { "inference_id" : "test_reranker" }' \
-                             )
+        'FROM books METADATA _score ' \
+        '| WHERE MATCH(description, "hobbit") OR MATCH(author, "Tolkien") ' \
+        '| SORT _score DESC ' \
+        '| LIMIT 100 ' \
+        '| RERANK rerank_score = "hobbit" ' \
+        'ON description, author ' \
+        'WITH { "inference_id" : "test_reranker" }' \
+      )
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

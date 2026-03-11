@@ -9,5 +9,7 @@ Style/SymbolArray:
   EnforcedStyle: brackets
 Naming/AsciiIdentifiers:
   Enabled: false
+Style/WordArray:
+  Enabled: false
 AllCops:
   SuggestExtensions: false
