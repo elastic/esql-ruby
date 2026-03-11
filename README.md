@@ -248,6 +248,15 @@ query.rename({ first_name: 'fn', last_name: 'ln' }).to_s
 # => 'FROM sample_data | RENAME first_name AS fn, last_name AS ln'
 ```
 
+### RERANK
+
+The [RERANK](https://www.elastic.co/docs/reference/query-languages/esql/commands/rerank) command uses an inference model to compute a new relevance score for an initial set of documents, directly within your ES|QL queries.
+
+```ruby
+ESQL.from('books').rerank(query: 'Tolkien').on(['title', 'description']).with('test_reranker').query
+=> "FROM books | RERANK \"Tolkien\" ON title, description WITH { \"inference_id\" : \"test_reranker\" }"
+```
+
 ### SORT
 The [SORT](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-sort) processing command sorts a table on one or more columns.
 

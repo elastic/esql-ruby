@@ -20,6 +20,7 @@ module Elastic
   # of documents, directly within your ES|QL queries.
   # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/rerank
   class Rerank
+    # Once you call +rerank+ on an +Elastic::ESQL+ object, you can chain +on+ and +with+ to it.
     # @param [String] column The name of the output column containing the reranked scores. If not
     # specified, the results will be stored in a column named _score. If the specified column
     # already exists, it will be overwritten with the new results. (Optional)
