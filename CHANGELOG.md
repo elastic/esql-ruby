@@ -1,3 +1,52 @@
+# 0.5.0
+
+This release adds some more commands and includes general updates in documentation.
+
+## Adds `MV_EXPAND` command
+
+The [`MV_EXPAND`](https://www.elastic.co/docs/reference/query-languages/esql/commands/mv_expand) processing command expands multivalued columns into one row per value, duplicating other columns.
+
+```ruby
+Elastic::ESQL.row({ a: [1, 2, 3], b: 'b' }).mv_expand('a').query
+# => "ROW a = [1, 2, 3], b = \"b\" | MV_EXPAND a"
+```
+
+## Adds `RERANK` command
+
+The [RERANK](https://www.elastic.co/docs/reference/query-languages/esql/commands/rerank) command uses an inference model to compute a new relevance score for an initial set of documents, directly within your ES|QL queries.
+
+```ruby
+ESQL.from('books').rerank(query: 'Tolkien').on(['title', 'description']).with('test_reranker').query
+# => "FROM books | RERANK \"Tolkien\" ON title, description WITH { \"inference_id\" : \"test_reranker\" }"
+```
+
+You can use the `on` and `with` functions to define the rerank query and chain `sort`, `limit` and `keep` to it too, for example to build rerank with multiple fields and a custom score column:
+
+```ruby
+ESQL.from('books')
+    .metadata('_score')
+    .where('MATCH(description, "hobbit")')
+    .sort('_score')
+    .desc
+    .limit(100)
+    .rerank(query: 'hobbit')
+    .on('description')
+    .with('test_reranker')
+    .limit(3)
+    .keep('title', '_score')
+    .query
+# => "FROM books METADATA _score | WHERE MATCH(description, \"hobbit\") | SORT _score DESC | LIMIT 100 | RERANK \"hobbit\" ON description WITH { \"inference_id\" : \"test_reranker\" } | LIMIT 3 | KEEP title, _score"
+```
+
+## Adds SAMPLE command
+
+The [SAMPLE](https://www.elastic.co/docs/reference/query-languages/esql/commands/sample) command samples a fraction of the table rows.
+
+```ruby
+Elastic::ESQL.from('employees').keep('emp_no').sample(0.05).query
+# => "FROM employees | KEEP emp_no | SAMPLE 0.05"
+```
+
 # 0.4.0
 
 This update adds some new ES|QL functions, tests for more specific uses, general documentation updates and code refactoring.
