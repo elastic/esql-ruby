@@ -46,6 +46,28 @@ describe Elastic::ESQL do
         '| FUSE LINEAR'
       )
     end
+
+    it 'builds a fuse LINEAR with query' do
+      expect(
+        esql.fuse(:linear).with({ normalizer: 'minmax' }).query
+      ).to eq(
+        'FROM books METADATA _id, _index, _score ' \
+        '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
+        '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
+        '| FUSE LINEAR WITH { "normalizer": "minmax" }'
+      )
+    end
+
+    it 'builds a fuse linear with more complex with query' do
+      expect(
+        esql.fuse(:linear).with({ weights: { 'fork1': 0.7, 'fork2': 0.3 }, normalizer: 'minmax' }).query
+      ).to eq(
+        'FROM books METADATA _id, _index, _score ' \
+        '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
+        '(WHERE semantic_title == "Shakespeare" | SORT _score DESC) ' \
+        '| FUSE LINEAR WITH { "weights": { "fork1": 0.7, "fork2": 0.3 }, "normalizer": "minmax" }'
+      )
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength
