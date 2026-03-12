@@ -28,15 +28,18 @@ module Elastic
     # @param [String] query The query text used to rerank the documents. This is typically the same
     #                       query used in the initial search.
     def initialize(esql, query: '', column: nil)
-      @column = column
-      @query = query
+      @sentences = if column
+                     ["#{column} = \"#{query}\""]
+                   else
+                     ["\"#{query}\""]
+                   end
       @esql = esql
     end
 
     # @param [Array|String] field One or more fields to use for reranking. These fields should
     #                             contain the text that the reranking model will evaluate.
     def on(fields)
-      @fields = fields.is_a?(String) ? fields : fields.join(', ')
+      @sentences[0].concat " ON #{fields.is_a?(String) ? fields : fields.join(', ')}"
       self
     end
 
@@ -44,20 +47,54 @@ module Elastic
     #                                     The inference endpoint must be configured with the
     #                                     rerank task type.
     def with(my_inference_endpoint)
-      @inference_id = "WITH { \"inference_id\" : \"#{my_inference_endpoint}\" }"
+      @sentences[0].concat " WITH { \"inference_id\" : \"#{my_inference_endpoint}\" }"
       self
     end
 
     def to_query
-      query = []
-      query << if @column
-                 "#{@column} = \"#{@query}\""
-               else
-                 "\"#{@query}\""
-               end
-      query << "ON #{@fields}" if @fields
-      query << @inference_id if @inference_id
-      query.join(' ')
+      @sentences.map do |sentence|
+        if sentence.is_a?(Hash) && sentence.keys.first == :sort
+          "SORT #{sentence[:sort].join(', ')}"
+        else
+          sentence
+        end
+      end.join(' | ')
+    end
+
+    # Implements sort so it's attached to the rerank object when building the final query.
+    def sort(column)
+      if find_sort
+        find_sort[:sort] << column
+      else
+        @sentences << { sort: [column] }
+      end
+      self
+    end
+
+    # Sorts ascending, adds ASC to the sort function
+    def ascending
+      find_sort[:sort].last.concat(' ASC')
+      self
+    end
+
+    # Sorts descending, adds DESC to the sort function
+    def descending
+      find_sort[:sort].last.concat(' DESC')
+      self
+    end
+
+    alias asc ascending
+    alias desc descending
+
+    # Reimplements limit for the rerank object.
+    def limit(limit)
+      @sentences << "LIMIT #{limit}"
+      self
+    end
+
+    def keep(*params)
+      @sentences << "KEEP #{params.join(', ')}"
+      self
     end
 
     private
@@ -68,6 +105,17 @@ module Elastic
 
     def respond_to_missing?(method_name, *args)
       super
+    end
+
+    def find_sort
+      @sentences.find { |a| a.is_a?(Hash) && a.keys.first == :sort }
+    end
+
+    def sorting
+      sorts = @sort.map do |s|
+        s.map { |k, v| "#{k} #{v}" }
+      end.join(', ')
+      "| SORT #{sorts}"
     end
   end
 end

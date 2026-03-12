@@ -20,3 +20,9 @@ require 'elastic/esql'
 # rubocop:disable Style/MixinUsage
 include Elastic
 # rubocop:enable Style/MixinUsage
+
+RSpec.configure do |rspec|
+  rspec.expect_with :rspec do |c|
+    c.max_formatted_output_length = nil
+  end
+end
