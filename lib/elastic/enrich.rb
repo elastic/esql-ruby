@@ -20,7 +20,7 @@ module Elastic
   # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-enrich
   class Enrich
     # Once you call +enrich+ on an +Elastic::ESQL+ object, you can chain +on+ and +with+ to it.
-    # @param [String] policy - The name of the enrich policy. You need to create and execute the enrich policy first.
+    # @param [String] policy The name of the enrich policy. You need to create and execute the enrich policy first.
     #
     # @example
     #
@@ -35,9 +35,11 @@ module Elastic
       @esql = esql
     end
 
-    # @param [String] match_field - The match field. ENRICH uses its value to look for records in
-    # the enrich index. If not specified, the match will be performed on the column with the same
-    # name as the match_field defined in the enrich policy.
+    # Chainable +on+ function.
+    # @param [String] match_field The match field. +ENRICH+ uses its value to look for records in
+    #                             the enrich index. If not specified, the match will be performed on
+    #                             the column with the same name as the match_field defined in the
+    #                             enrich policy.
     #
     # @example
     #
@@ -48,11 +50,13 @@ module Elastic
       self
     end
 
-    # @param [String] fields - The enrich fields from the enrich index that are added to the result
-    # as new columns. If a column with the same name as the enrich field already exists, the existing
-    # column will be replaced by the new column. If not specified, each of the enrich fields defined
-    # in the policy is added. A column with the same name as the enrich field will be dropped unless
-    # the enrich field is renamed.
+    # Chainable +with+ function.
+    # @param [String] fields The enrich fields from the enrich index that are added to the result
+    #                        as new columns. If a column with the same name as the enrich field
+    #                        already exists, the existing column will be replaced by the new column.
+    #                        If not specified, each of the enrich fields defined in the policy is
+    #                        added. A column with the same name as the enrich field will be dropped
+    #                        unless the enrich field is renamed.
     #
     # @example
     #   esql.enrich('policy').on('a').with('name')
@@ -67,6 +71,7 @@ module Elastic
       self
     end
 
+    # Builds the query for enrich.
     def to_query
       query = [@policy]
       query << "ON #{@match_field}" if @match_field
@@ -74,6 +79,7 @@ module Elastic
       query.join(' ')
     end
 
+    # Calls the esql object's to_s
     def to_s
       @esql.to_s
     end
