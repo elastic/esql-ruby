@@ -20,8 +20,14 @@ module Elastic
   # data and combines the results in a single output table.
   # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/fork
   module Fork
-    # @param [Array<String>|String] columns A comma-separated list of columns to remove.
-    # @option params [Symbol] fuse_method name The column name. In case of duplicate column names, only the
+    # @param [Array<ESQL.branch>] forks An array of +ESQL.branch+ objects.
+    # @example
+    #  Elastic::ESQL.from('employees').fork(
+    #    [
+    #     ESQL.branch.where('emp_no == 10001'),
+    #     ESQL.branch.where('emp_no == 10002')
+    #    ]
+    #  )
     def fork(forks)
       @query[:fork] = forks.map { |f| "(#{f.query})" }.join(' ')
       self
