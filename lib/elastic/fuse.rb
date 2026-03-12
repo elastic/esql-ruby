@@ -19,11 +19,37 @@ module Elastic
   # The FUSE processing command merges rows from multiple result sets and assigns new relevance scores.
   # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/fuse
   module Fuse
-    # @param [Array<String>|String] columns A comma-separated list of columns to remove.
-    # @option params [Symbol] fuse_method name The column name. In case of duplicate column names, only the
-    def fuse(type = nil)
-      @query[:fuse] = type&.upcase
+    # @param [String] fuse_method Defaults to RRF. Can be one of RRF (for Reciprocal Rank Fusion) or
+    #                             LINEAR (for linear combination of scores). Designates which method
+    #                             to use to assign new relevance scores.
+    def fuse(fuse_method = nil)
+      @query[:fuse] = fuse_method&.to_s&.upcase
       self
     end
+
+    # @param [String|Hash] fields A String or Hash with the information for the with query.
+    def with(fields)
+      fields = display_hash(fields) if fields.is_a?(Hash)
+      @query[:fuse].concat " WITH #{fields}"
+      self
+    end
+
+    private
+
+    # rubocop:disable Metrics/MethodLength
+    def display_hash(hash)
+      display = hash.keys.map do |key|
+        hash[key] = if hash[key].is_a?(Hash)
+                      display_hash(hash[key])
+                    elsif hash[key].is_a?(String)
+                      "\"#{hash[key]}\""
+                    else
+                      hash[key]
+                    end
+        "\"#{key}\": #{hash[key]}"
+      end.join(', ')
+      "{ #{display} }"
+    end
+    # rubocop:enable Metrics/MethodLength
   end
 end
