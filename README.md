@@ -257,6 +257,24 @@ ESQL.from('books').rerank(query: 'Tolkien').on(['title', 'description']).with('t
 # => "FROM books | RERANK \"Tolkien\" ON title, description WITH { \"inference_id\" : \"test_reranker\" }"
 ```
 
+You can use the `on` and `with` functions to define the rerank query and chain `sort`, `limit` and `keep` to it too, for example to build rerank with multiple fields and a custom score column:
+
+```ruby
+ESQL.from('books')
+    .metadata('_score')
+    .where('MATCH(description, "hobbit")')
+    .sort('_score')
+    .desc
+    .limit(100)
+    .rerank(query: 'hobbit')
+    .on('description')
+    .with('test_reranker')
+    .limit(3)
+    .keep('title', '_score')
+    .query
+# => "FROM books METADATA _score | WHERE MATCH(description, \"hobbit\") | SORT _score DESC | LIMIT 100 | RERANK \"hobbit\" ON description WITH { \"inference_id\" : \"test_reranker\" } | LIMIT 3 | KEEP title, _score"
+```
+
 ### SAMPLE
 
 The [SAMPLE](https://www.elastic.co/docs/reference/query-languages/esql/commands/sample) command samples a fraction of the table rows.
