@@ -25,13 +25,13 @@ module Elastic
     #   esql.drop('column1')
     #   esql.drop('column1, column2, column3')
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-drop
-    def drop!(*params)
-      @query[:drop] = params.join(', ')
+    def drop!(*columns)
+      @query[:drop] = columns.join(', ')
       self
     end
 
-    def drop(*params)
-      method_copy(:drop, params)
+    def drop(*columns)
+      method_copy(:drop, columns)
     end
   end
 end
