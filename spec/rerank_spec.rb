@@ -53,6 +53,51 @@ describe Elastic::ESQL do
         'WITH { "inference_id" : "test_reranker" }' \
       )
     end
+
+    it 'builds another example query' do
+      query = esql.metadata('_score')
+                  .where('MATCH(description, "hobbit") OR MATCH(author, "Tolkien")')
+                  .sort('_score')
+                  .desc
+                  .limit(100)
+                  .rerank(column: 'rerank_score', query: 'hobbit')
+                  .on(['description', 'author'])
+                  .with('test_reranker')
+                  .sort('rerank_score').desc
+                  .sort('book_no').desc
+                  .limit(3)
+      expect(query.query).to eq(
+        'FROM books METADATA _score ' \
+        '| WHERE MATCH(description, "hobbit") OR MATCH(author, "Tolkien") ' \
+        '| SORT _score DESC ' \
+        '| LIMIT 100 ' \
+        '| RERANK rerank_score = "hobbit" ON description, author WITH { "inference_id" : "test_reranker" } ' \
+        '| SORT rerank_score DESC, book_no DESC ' \
+        '| LIMIT 3'
+      )
+    end
+
+    it 'builds another example query' do
+      query = esql.metadata('_score')
+                  .where('MATCH(description, "hobbit")')
+                  .sort('_score')
+                  .desc
+                  .limit(100)
+                  .rerank(query: 'hobbit')
+                  .on('description')
+                  .with('test_reranker')
+                  .limit(3)
+                  .keep('title', '_score')
+      expect(query.query).to eq(
+        'FROM books METADATA _score ' \
+        '| WHERE MATCH(description, "hobbit") ' \
+        '| SORT _score DESC ' \
+        '| LIMIT 100 ' \
+        '| RERANK "hobbit" ON description WITH { "inference_id" : "test_reranker" } ' \
+        '| LIMIT 3 ' \
+        '| KEEP title, _score'
+      )
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength
