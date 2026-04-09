@@ -35,6 +35,7 @@ require_relative 'rename'
 require_relative 'rerank'
 require_relative 'row'
 require_relative 'sample'
+require_relative 'set'
 require_relative 'show'
 require_relative 'stats'
 require_relative 'ts'
@@ -47,7 +48,7 @@ module Elastic
   class ESQL
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, Keep, LookupJoin, Metadata,
-      MvExpand, Queryable, Rename, Row, Sample, Show, Stats, TS, Util
+      MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats, TS, Util
     ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
@@ -64,9 +65,10 @@ module Elastic
     def query
       raise ArgumentError, 'No source command found' unless source_command_present?
 
+      string_query = @set ? "SET #{@set};\n" : ''
       @query[:enrich] = @enriches.map(&:to_query).join('| ') if @enriches
       @query[:rerank] = @rerank.to_query if @rerank
-      string_query = build_string_query
+      string_query.concat(build_string_query)
       string_query.concat(" #{@custom.join(' ')}") unless @custom.empty?
       string_query
     end
