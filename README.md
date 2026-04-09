@@ -107,9 +107,20 @@ Elastic::ESQL.ts('index_pattern', fields).query
 # => "TS index_pattern METADATA _index, _id_"
 ```
 
+### Query Directives
+
+#### SET
+
+The [SET](https://www.elastic.co/docs/reference/query-languages/esql/commands/set) directive can be used to specify query settings that modify the behavior of an ES|QL query.
+
+```ruby
+ESQL.from('many_numbers').set(approximation: true).stats(sum: 'sv').query
+# => "SET approximation = true;\nFROM many_numbers | STATS SUM(sv)"
+```
+
 ### DISSECT
 
-[DISSECT](https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok ) enables you to extract structured data out of a string. The `dissect` function accepts a input and a pattern:
+[DISSECT](https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok) enables you to extract structured data out of a string. The `dissect` function accepts a input and a pattern:
 
 ```ruby
 query = Elastic::ESQL.from('sample_data')
