@@ -77,6 +77,63 @@ describe Elastic::ESQL do
       esql = ESQL.from('employees').inline_stats(inline_stats)
       expect(esql.query).to eq('FROM employees | INLINE STATS MEDIAN(salary), MEDIAN_ABSOLUTE_DEVIATION(salary)')
     end
+
+    it 'uses TS' do
+      inline_stats = { avg: { rate: 'requests, 10m' } }
+      esql = ESQL.ts('metrics').where('TRANGE(1h)').inline_stats(inline_stats).by('TBUCKET(1m), host')
+      expect(esql.query).to eq(
+        'TS metrics ' \
+        '| WHERE TRANGE(1h) ' \
+        '| INLINE STATS AVG(RATE(requests, 10m)) BY TBUCKET(1m), host'
+      )
+    end
+
+    it 'uses more TS' do
+      esql = ESQL.ts('k8s')
+                 .where('cluster == "prod"')
+                 .where('pod == "two"')
+                 .inline_stats({ column: 'events_received', max: { absent_over_time: 'events_received' } })
+                 .by('pod, time_bucket = TBUCKET(2 minute)')
+      # https://www.elastic.co/docs/reference/query-languages/esql/functions-operators/time-series-aggregation-functions
+      expect(esql.query).to eq(
+        'TS k8s | WHERE cluster == "prod" AND pod == "two" ' \
+        '| INLINE STATS events_received = MAX(ABSENT_OVER_TIME(events_received)) ' \
+        'BY pod, time_bucket = TBUCKET(2 minute)'
+      )
+    end
+
+    it 'runs other examples from TS agg doc page' do
+      inline_stats = {
+        column: 'events_received',
+        max: { absent_over_time: 'events_received' },
+        by: 'pod, time_bucket = TBUCKET(2 minute)'
+      }
+      expect(
+        ESQL.ts('k8s')
+          .where('cluster == "prod"')
+          .where('pod == "two"')
+          .inline_stats(inline_stats).query
+      ).to eq(
+        'TS k8s ' \
+        '| WHERE cluster == "prod" AND pod == "two" ' \
+        '| INLINE STATS events_received = MAX(ABSENT_OVER_TIME(events_received)) BY pod, time_bucket = TBUCKET(2 minute)'
+      )
+
+      expect(
+        ESQL.ts('k8s')
+          .inline_stats(
+            [
+              { column: 'distincts', count_distinct: { count_distinct_over_time: 'network.cost' } },
+              { column: 'distincts_imprecise', count_distinct: { count_distinct_over_time: 'network.cost, 100' } }
+            ]
+          ).by('cluster, time_bucket = TBUCKET(1minute)').query
+      ).to eq(
+        'TS k8s ' \
+        '| INLINE STATS distincts = COUNT_DISTINCT(COUNT_DISTINCT_OVER_TIME(network.cost)), ' \
+        'distincts_imprecise = COUNT_DISTINCT(COUNT_DISTINCT_OVER_TIME(network.cost, 100)) ' \
+        'BY cluster, time_bucket = TBUCKET(1minute)'
+      )
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

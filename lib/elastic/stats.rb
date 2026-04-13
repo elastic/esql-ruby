@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+require_relative 'stats_mixin'
+
 module Elastic
   # The STATS processing command groups rows according to a common value and calculates one or
   # more aggregated values over the grouped rows.
