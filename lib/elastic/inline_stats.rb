@@ -14,13 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-require_relative 'stats_mixin'
-
 module Elastic
-  # The STATS processing command groups rows according to a common value and calculates one or
-  # more aggregated values over the grouped rows.
-  module Stats
-    include StatsMixin
+  # The INLINE STATS processing command groups rows according to a common value and calculates one
+  # or more aggregated values over the grouped rows. The results are appended as new columns to the
+  # input rows.
+  # The command is identical to STATS except that it preserves all the columns from the input table.
+  module InlineStats
     # @param [Hash|Array<Hash>] stats
     # @option stats [String] columnX The name by which the aggregated value is returned. If
     #                                omitted, the name is equal to the corresponding expression
@@ -34,16 +33,16 @@ module Elastic
     #                                             included in the evaluation of expressionX.
     #
     # @example
-    #   ESQL.from('employees').stats(column: 'avg_lang', avg: 'languages')
+    #   ESQL.from('employees').inline_stats(column: 'avg_lang', avg: 'languages')
     #
     #   stats = [
     #     { column: 'avg_lang', avg: 'languages' },
     #     { column: 'max_lang', max: 'languages' }
     #   ]
-    #   esql = ESQL.from('employees').stats(stats)
+    #   esql = ESQL.from('employees').inline_stats(stats)
     #
-    def stats(stats)
-      @query[:stats] = parse_stats(stats)
+    def inline_stats(stats)
+      @query[:inline_stats] = parse_stats(stats)
       self
     end
   end

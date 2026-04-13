@@ -39,6 +39,8 @@ module Elastic
           "#{k.upcase} #{v} METADATA #{@metadata.join(', ')}"
         elsif k == :lookup_joins
           build_lookup_joins(v)
+        elsif k == :inline_stats
+          "#{k.to_s.upcase.gsub('_', ' ')} #{v}"
         elsif k && (v == '' || v.nil?)
           k.upcase
         else

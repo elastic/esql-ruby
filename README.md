@@ -313,9 +313,11 @@ Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.to_s
 # => 'FROM sample_data | SORT @timestamp DESC NULLS FIRST'
 ```
 
-### STATS
+### STATS, INLINE STATS
 
 The [`STATS`](https://www.elastic.co/docs/reference/query-languages/esql/commands/stats-by) processing command groups rows according to a common value and calculates one or more aggregated values over the grouped rows.
+
+The [`INLINE STATS`](https://www.elastic.co/docs/reference/query-languages/esql/commands/inlinestats-by) command is identical to STATS except that it preserves all the columns from the input table.
 
 ```ruby
 > Elastic::ESQL.from('employees').stats(column: 'avg_lang', avg: 'languages').query

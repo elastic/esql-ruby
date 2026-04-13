@@ -26,6 +26,7 @@ require_relative 'functions'
 require_relative 'fork'
 require_relative 'fuse'
 require_relative 'grok'
+require_relative 'inline_stats'
 require_relative 'keep'
 require_relative 'lookup_join'
 require_relative 'metadata'
@@ -47,8 +48,8 @@ module Elastic
   #    # => FROM 'sample_data' | SORT @timestamp desc | LIMIT 3
   class ESQL
     [
-      ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, Keep, LookupJoin, Metadata,
-      MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats, TS, Util
+      ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, InlineStats, Keep, LookupJoin,
+      Metadata, MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats, TS, Util
     ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
