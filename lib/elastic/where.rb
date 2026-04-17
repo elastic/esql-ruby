@@ -26,7 +26,7 @@ module Elastic
     #
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-where
     def where!(expression)
-      expression = expression.map { |k, v| "#{k} == #{v}" }.join if expression.is_a?(Hash)
+      expression = parse_where(expression)
       if @query[:where]
         @query[:where] += " AND #{expression}"
       else
@@ -37,6 +37,18 @@ module Elastic
 
     def where(expression)
       method_copy(:where, expression)
+    end
+
+    private
+
+    def parse_where(expression)
+      if expression.is_a?(Hash)
+        expression = expression.map do |k, v|
+          value = v.is_a?(String) ? "\"#{v}\"" : v
+          "#{k} == #{value}"
+        end.join
+      end
+      expression
     end
   end
 end
