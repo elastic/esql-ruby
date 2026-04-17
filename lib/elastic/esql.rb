@@ -30,6 +30,7 @@ require_relative 'inline_stats'
 require_relative 'keep'
 require_relative 'lookup_join'
 require_relative 'metadata'
+require_relative 'metrics_info'
 require_relative 'mv_expand'
 require_relative 'queryable'
 require_relative 'rename'
@@ -50,7 +51,8 @@ module Elastic
   class ESQL
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, InlineStats, Keep, LookupJoin,
-      Metadata, MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats, StatsMixin, TS, Util
+      Metadata, MetricsInfo, MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats,
+      StatsMixin, TS, Util
     ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze

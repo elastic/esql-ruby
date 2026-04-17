@@ -41,6 +41,8 @@ module Elastic
           build_lookup_joins(v)
         elsif k == :inline_stats
           "#{k.to_s.upcase.gsub('_', ' ')} #{v}"
+        elsif k == :metrics_info
+          k.to_s.upcase
         elsif k && (v == '' || v.nil?)
           k.upcase
         else

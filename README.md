@@ -241,13 +241,22 @@ Elastic::ESQL.from('system_metrics')
 # => FROM system_metrics | LOOKUP JOIN host_inventory ON host.name | LOOKUP JOIN ownerships ON host.name
 ```
 
+### METRICS_INFO
+
+The [METRICS_INFO](https://www.elastic.co/docs/reference/query-languages/esql/commands/metrics-info) processing command retrieves information about the metrics available in time series data streams, along with their applicable dimensions and other metadata.
+
+```ruby
+ESQL.ts('k8s').where(cluster: 'prod').metrics_info.sort('metric_name').query
+# => "TS k8s | WHERE cluster == \"prod\" | METRICS_INFO | SORT metric_name"
+```
+
 ### MV_EXPAND
 
 The [MV_EXPAND](https://www.elastic.co/docs/reference/query-languages/esql/commands/mv_expand) processing command expands multivalued columns into one row per value, duplicating other columns.
 
 ```ruby
 Elastic::ESQL.row({ a: [1, 2, 3], b: 'b' }).mv_expand('a').query
-=> "ROW a = [1, 2, 3], b = \"b\" | MV_EXPAND a"
+#=> "ROW a = [1, 2, 3], b = \"b\" | MV_EXPAND a"
 ```
 
 ### RENAME
