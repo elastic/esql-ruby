@@ -22,7 +22,7 @@ module Elastic
     # to the function, without adding any pipe characters. They'll be joined to the rest of the
     # query by a space character.
     #
-    # @param [String] custom String to add to the query
+    # @param [String] custom String to add to the query.
     # @example
     #   esql.custom('| MY_VALUE = "test value"')
     #   esql.custom('| MY_VALUE = "test"').custom('| OTHER, VALUES')

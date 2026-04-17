@@ -25,24 +25,24 @@ module Elastic
       self
     end
 
-    # Sorts ascending, adds ASC to the sort function
+    # Sorts ascending, adds ASC to the sort function.
     def ascending!
       sorting('ASC')
     end
 
-    # Sorts descending, adds DESC to the sort function
+    # Sorts descending, adds DESC to the sort function.
     def descending!
       sorting('DESC')
     end
 
-    # Sort null values first using NULLS FIRST
+    # Sort null values first using NULLS FIRST.
     # By default, null values are treated as being larger than any other value.
     #
     def nulls_first!
       sorting('NULLS FIRST')
     end
 
-    # Sort null values last using NULLS LAST
+    # Sort null values last using NULLS LAST.
     #
     def nulls_last!
       sorting('NULLS LAST')
