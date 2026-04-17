@@ -39,6 +39,7 @@ require_relative 'sample'
 require_relative 'set'
 require_relative 'show'
 require_relative 'stats'
+require_relative 'stats_mixin'
 require_relative 'ts'
 require_relative 'util'
 
@@ -49,7 +50,7 @@ module Elastic
   class ESQL
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, InlineStats, Keep, LookupJoin,
-      Metadata, MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats, TS, Util
+      Metadata, MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats, StatsMixin, TS, Util
     ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
