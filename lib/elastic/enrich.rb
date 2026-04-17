@@ -42,7 +42,6 @@ module Elastic
     #                             enrich policy.
     #
     # @example
-    #
     #  query.enrich(''policy').on('a')
     #
     def on(match_field)
