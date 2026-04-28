@@ -376,6 +376,18 @@ They can be used with `TS`:
 # => "TS k8s | WHERE cluster == \"prod\" AND pod == \"two\" | STATS events_received = MAX(ABSENT_OVER_TIME(events_received)) BY pod, time_bucket = TBUCKET(2 minute)"
 ```
 
+### USER_AGENT
+
+The [USER_AGENT](https://www.elastic.co/docs/reference/query-languages/esql/commands/user-agent) processing command parses a user-agent string and extracts its components (name, version, OS, device) into new columns.
+
+```ruby
+> ESQL.row(ua_str: 'Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0')
+      .user_agent(ua: 'ua_str')
+      .with(properties: ['name', 'version', 'device'], extract_device_type: true)
+      .keep('ua.*')
+      .query
+# => "ROW ua_str = \"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0\" | USER_AGENT ua = ua_str WITH { \"properties\": [\"name\", \"version\", \"device\"], \"extract_device_type\": true } | KEEP ua.*"
+```
 
 ### WHERE
 
