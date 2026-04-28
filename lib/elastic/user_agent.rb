@@ -34,7 +34,7 @@ module Elastic
               'params needs to be a Hash with one pair of key, value'
       end
 
-      @query = params.shift.join(" = ")
+      @query = params.shift.join(' = ')
       @esql = esql
     end
 

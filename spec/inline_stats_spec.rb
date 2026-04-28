@@ -116,7 +116,8 @@ describe Elastic::ESQL do
       ).to eq(
         'TS k8s ' \
         '| WHERE cluster == "prod" AND pod == "two" ' \
-        '| INLINE STATS events_received = MAX(ABSENT_OVER_TIME(events_received)) BY pod, time_bucket = TBUCKET(2 minute)'
+        '| INLINE STATS events_received = MAX(ABSENT_OVER_TIME(events_received)) ' \
+        'BY pod, time_bucket = TBUCKET(2 minute)'
       )
 
       expect(

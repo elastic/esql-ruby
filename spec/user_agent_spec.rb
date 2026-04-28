@@ -17,6 +17,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Elastic::ESQL do
   context 'USER AGENT' do
     it 'builds a basic query' do
@@ -64,3 +65,4 @@ describe Elastic::ESQL do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
