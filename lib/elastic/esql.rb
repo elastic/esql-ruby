@@ -42,6 +42,7 @@ require_relative 'show'
 require_relative 'stats'
 require_relative 'stats_mixin'
 require_relative 'ts'
+require_relative 'user_agent'
 require_relative 'util'
 
 module Elastic
@@ -155,6 +156,13 @@ module Elastic
 
     def self.branch
       Branch.new
+    end
+
+    # Creates a new UserAgent object to chain with +with+. If other method is chained to the
+    # UserAgent object, it calls it upon the ESQL object that instantiated it, and returns it.
+    # @return [Elastic::UserAgent]
+    def user_agent(params)
+      UserAgent.new(params, self)
     end
 
     private
