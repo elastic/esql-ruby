@@ -37,7 +37,7 @@ module Elastic
     end
 
     def rename(params)
-      method_copy(:rename, params)
+      method_copy(params)
     end
   end
 end

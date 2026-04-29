@@ -49,23 +49,23 @@ module Elastic
     end
 
     def sort(column)
-      method_copy(:sort, column)
+      method_copy(column)
     end
 
     def ascending
-      method_copy(:ascending)
+      method_copy
     end
 
     def descending
-      method_copy(:descending)
+      method_copy
     end
 
     def nulls_first
-      method_copy(:nulls_first)
+      method_copy
     end
 
     def nulls_last
-      method_copy(:nulls_last)
+      method_copy
     end
 
     alias asc ascending

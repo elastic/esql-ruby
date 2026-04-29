@@ -43,7 +43,7 @@ module Elastic
     end
 
     def change_point(*params)
-      method_copy(:change_point, params)
+      method_copy(params)
     end
 
     private

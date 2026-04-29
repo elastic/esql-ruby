@@ -36,7 +36,7 @@ module Elastic
     end
 
     def eval(params)
-      method_copy(:eval, params)
+      method_copy(params)
     end
   end
 end

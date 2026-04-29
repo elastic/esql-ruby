@@ -31,7 +31,7 @@ module Elastic
     end
 
     def drop(*columns)
-      method_copy(:drop, columns)
+      method_copy(columns)
     end
   end
 end

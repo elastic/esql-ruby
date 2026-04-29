@@ -31,7 +31,7 @@ module Elastic
     end
 
     def sample(probability)
-      method_copy(:sample, probability)
+      method_copy(probability)
     end
   end
 end
