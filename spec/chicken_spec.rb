@@ -18,7 +18,6 @@
 require 'spec_helper'
 
 describe Elastic::ESQL do
-  # rubocop:disable
   context '🐔' do
     it 'calls chicken from class' do
       expect(ESQL.🐔('Hola mundo')).to eq 'ROW CHICKEN("Hola mundo")'
@@ -36,5 +35,4 @@ describe Elastic::ESQL do
       expect(ESQL.new.🐔('Hola mundo')).to eq 'ROW CHICKEN("Hola mundo")'
     end
   end
-  # rubocop:enable
 end

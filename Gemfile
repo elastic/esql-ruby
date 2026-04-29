@@ -18,3 +18,9 @@
 source 'https://rubygems.org'
 
 gemspec
+
+gem 'debug', '~> 1' unless defined?(JRUBY_VERSION)
+gem 'rake', '~> 13'
+gem 'rspec', '~> 3'
+gem 'rubocop', '~> 1.75'
+gem 'yard', '~> 0.9'

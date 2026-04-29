@@ -60,7 +60,7 @@ describe Elastic::ESQL do
 
     it 'builds a fuse linear with more complex with query' do
       expect(
-        esql.fuse(:linear).with({ weights: { 'fork1': 0.7, 'fork2': 0.3 }, normalizer: 'minmax' }).query
+        esql.fuse(:linear).with({ weights: { fork1: 0.7, fork2: 0.3 }, normalizer: 'minmax' }).query
       ).to eq(
         'FROM books METADATA _id, _index, _score ' \
         '| FORK (WHERE title == "Shakespeare" | SORT _score DESC) ' \
