@@ -63,6 +63,8 @@ module Elastic
     def caller_method_name(callers)
       if Gem::Version.new('3.4') > RUBY_VERSION
         callers.last.split.last.gsub('`', '').gsub("'", '')
+      elsif defined?(JRUBY_VERSION) && Gem::Version.new('10') <= JRUBY_VERSION
+        callers.last.split.last.gsub("'", '')
       else
         callers.last.split('#').last.gsub("'", '')
       end
