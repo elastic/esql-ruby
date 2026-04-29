@@ -39,7 +39,7 @@ describe 'Docs examples' do
           .dissect('message', '[%{ts}]%{->}[%{level}]')
           .to_s
       ).to eq(
-        'ROW message = "[1998-08-10T17:15:42]          [WARN]" '\
+        'ROW message = "[1998-08-10T17:15:42]          [WARN]" ' \
         '| DISSECT message """[%{ts}]%{->}[%{level}]"""'
       )
 

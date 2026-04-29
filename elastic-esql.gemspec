@@ -24,14 +24,10 @@ Gem::Specification.new do |s|
   s.metadata = {
     'changelog_uri' => 'https://github.com/elastic/esql-ruby/blob/main/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/elastic/esql-ruby/tree/main',
-    'bug_tracker_uri' => 'https://github.com/elastic/esql-ruby/issues'
+    'bug_tracker_uri' => 'https://github.com/elastic/esql-ruby/issues',
+    'rubygems_mfa_required' => 'true'
   }
   s.files         = ['lib/elastic/esql.rb']
   s.require_paths = ['lib']
   s.required_ruby_version = '>= 3.0'
-  s.add_development_dependency 'debug', '~> 1' unless defined?(JRUBY_VERSION)
-  s.add_development_dependency 'rake', '~> 13'
-  s.add_development_dependency 'rspec', '~> 3'
-  s.add_development_dependency 'rubocop', '~> 1.75'
-  s.add_development_dependency 'yard', '~> 0.9'
 end

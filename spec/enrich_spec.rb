@@ -63,7 +63,7 @@ describe Elastic::ESQL do
         ESQL.row(language_code: '"1"').enrich('languages_policy').to_s
       ).to eq(
         'ROW language_code = "1" ' \
-      '| ENRICH languages_policy'
+        '| ENRICH languages_policy'
       )
 
       expect(
