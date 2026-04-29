@@ -33,7 +33,7 @@ module Elastic
     end
 
     def grok(input, pattern)
-      method_copy(:grok, input, pattern)
+      method_copy(input, pattern)
     end
   end
 end

@@ -39,7 +39,7 @@ module Elastic
     end
 
     def dissect(input, pattern, separator = nil)
-      method_copy(:dissect, input, pattern, separator)
+      method_copy(input, pattern, separator)
     end
   end
 end

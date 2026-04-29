@@ -32,7 +32,7 @@ module Elastic
     end
 
     def registered_domain(prefix, expression)
-      method_copy(__method__, prefix, expression)
+      method_copy(prefix, expression)
     end
   end
 end

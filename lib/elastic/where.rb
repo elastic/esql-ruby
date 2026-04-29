@@ -36,7 +36,7 @@ module Elastic
     end
 
     def where(expression)
-      method_copy(:where, expression)
+      method_copy(expression)
     end
 
     private

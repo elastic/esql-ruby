@@ -29,7 +29,7 @@ module Elastic
     end
 
     def keep(*params)
-      method_copy(:keep, params)
+      method_copy(params)
     end
   end
 end

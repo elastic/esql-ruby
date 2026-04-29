@@ -43,7 +43,7 @@ module Elastic
     end
 
     def lookup_join(lookup_index, field_name)
-      method_copy(:lookup_join, lookup_index, field_name)
+      method_copy(lookup_index, field_name)
     end
   end
 end

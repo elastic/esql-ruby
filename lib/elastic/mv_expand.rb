@@ -30,7 +30,7 @@ module Elastic
     end
 
     def mv_expand(*params)
-      method_copy(:mv_expand, *params)
+      method_copy(*params)
     end
   end
 end

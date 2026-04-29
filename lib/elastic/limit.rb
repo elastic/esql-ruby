@@ -26,7 +26,7 @@ module Elastic
     end
 
     def limit(max_number_of_rows)
-      method_copy(:limit, max_number_of_rows)
+      method_copy(max_number_of_rows)
     end
   end
 end

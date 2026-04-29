@@ -20,10 +20,16 @@ module Elastic
   module Util
     # Helper method to return a copy of the object when functions are called without `!`, so the
     # object is not mutated.
-    def method_copy(name, *params)
+    def method_copy(*params)
+      # Get caller method. Using caller(start, length):
+      # The optional start parameter determines the number of initial stack entries to omit from the
+      # top of the stack. A second optional length parameter can be used to limit how many entries
+      # are returned from the stack.
+      # The method calling method_copy is the method we want to actually copy
+      name = caller_method_name(caller(0, 2))
       esql = clone
       esql.instance_variable_set('@query', esql.instance_variable_get('@query').clone)
-      esql.send("#{name}!", *params)
+      esql.send("#{name.to_sym}!", *params)
       esql
     end
 
@@ -53,6 +59,14 @@ module Elastic
     # rubocop:enable Metrics
 
     private
+
+    def caller_method_name(callers)
+      if Gem::Version.new('3.4') > RUBY_VERSION
+        callers.last.split.last.gsub('`', '').gsub("'", '')
+      else
+        callers.last.split('#').last.gsub("'", '')
+      end
+    end
 
     # Helper to build the LOOKUP JOIN part of the query.
     def build_lookup_joins(joins)
