@@ -33,6 +33,7 @@ require_relative 'metadata'
 require_relative 'metrics_info'
 require_relative 'mv_expand'
 require_relative 'queryable'
+require_relative 'registered_domain'
 require_relative 'rename'
 require_relative 'rerank'
 require_relative 'row'
@@ -52,8 +53,8 @@ module Elastic
   class ESQL
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, InlineStats, Keep, LookupJoin,
-      Metadata, MetricsInfo, MvExpand, Queryable, Rename, Row, Sample, SetDirective, Show, Stats,
-      StatsMixin, TS, Util
+      Metadata, MetricsInfo, MvExpand, Queryable, RegisteredDomain, Rename, Row, Sample,
+      SetDirective, Show, Stats, StatsMixin, TS, Util
     ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
