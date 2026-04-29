@@ -44,6 +44,7 @@ require_relative 'stats'
 require_relative 'stats_mixin'
 require_relative 'ts'
 require_relative 'user_agent'
+require_relative 'uri_parts'
 require_relative 'util'
 
 module Elastic
@@ -54,7 +55,7 @@ module Elastic
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, InlineStats, Keep, LookupJoin,
       Metadata, MetricsInfo, MvExpand, Queryable, RegisteredDomain, Rename, Row, Sample,
-      SetDirective, Show, Stats, StatsMixin, TS, Util
+      SetDirective, Show, Stats, StatsMixin, TS, URIParts, Util
     ].each { |m| include m }
 
     SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
