@@ -74,5 +74,27 @@ module Elastic
     def build_lookup_joins(joins)
       joins.map { |a| a.map { |k, v| "LOOKUP JOIN #{k} ON #{v}" } }.flatten.join(' | ')
     end
+
+    # Function for eval, row, and other functions that have one or more columns with values specified
+    # as parameters. The hash_or_string function is called with the caller name since it's the same
+    # logic to use these parameters.
+    # TODO: Refactor to accept other types when not a Hash
+    def hash_param(name, params)
+      raise_hash_error(name) unless params.is_a?(Hash)
+
+      @query[symbolize(name)] = params.map { |k, v| "#{k} = #{v}" }.join(', ')
+      self
+    end
+
+    # Error raised when a function expects a Hash and something else is passed in, with explanation
+    def raise_hash_error(name)
+      raise ArgumentError, "#{name.to_s.upcase} needs a Hash as a parameter where the keys are the " \
+                           'column names and the value is the function or expression to calculate.'
+    end
+
+    # Used when building the query from hash params function
+    def symbolize(name)
+      name.is_a?(Symbol) ? name : name.to_sym
+    end
   end
 end
