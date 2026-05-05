@@ -1,3 +1,22 @@
+# 0.6.0
+
+* Tested versions of Ruby:
+  * MRI `3.3`, `3.4` and `4.0`
+  * JRuby: `9.4` and `10.0`
+  * TruffleRuby (latest)
+  * Ruby `3.2` has been dropped from the test matrix since it's reached its end of life
+* General refactors. Improvements and fixes in source code documentation.
+* When using `where`, String values will now be delimited by double quotes `"`.
+* Adds `WITH` support for `FUSE` commands. [Pull Request](https://github.com/elastic/esql-ruby/pull/31)
+* Adds `SET` directive. [Pull Request](https://github.com/elastic/esql-ruby/pull/32)
+* Adds `INLINE_STATS`. [Pull Request](https://github.com/elastic/esql-ruby/pull/33)
+* Updates aggregation functions - The Aggregation functions have been updated to add `:earliest`, `:first`, `:last`, `:latest` and `:sparkline`.
+* Adds `METRICS_INFO`. [Pull Request](https://github.com/elastic/esql-ruby/pull/34)
+* Adds `USER_AGENT`. [Pull Request](https://github.com/elastic/esql-ruby/pull/35)
+* Adds `REGISTERED_DOMAIN`. [Pull Request](https://github.com/elastic/esql-ruby/pull/36)
+* Adds `URI_PARTS`. [Pull Request](https://github.com/elastic/esql-ruby/pull/36)
+* Adds `PROMQL`. [Pull Request](https://github.com/elastic/esql-ruby/pull/37)
+
 # 0.5.0
 
 This release adds some more commands and includes general updates in documentation.
