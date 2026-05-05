@@ -65,7 +65,7 @@ esql = ESQL.from('employees')
 
 📜 Reference documentation can be generated with YARD docs in `./doc` by running `rake yard`. You can also check out [the tests](https://github.com/elastic/esql-ruby/tree/main/spec) for even more usage examples.
 
-### Source Commands (FROM, ROW, SHOW, TS)
+### Source Commands (FROM, PROMQL, ROW, SHOW, TS)
 
 An ES|QL query **must start** with a source command:
 
@@ -88,9 +88,17 @@ Elastic::ESQL.ts('index_pattern').to_s
 # => TS index_pattern
 > Elastic::ESQL.ts('sample', '_index, _id').query
 # => TS sample METADATA _index, _id
+
+Elastic::ESQL.promql(
+                index: 'k8s',
+                step: '1h',
+                result: 'result',
+                expression: '(sum by (cluster) (network.cost))'
+              ).sort('result').query
+# => "PROMQL index=k8s step=1h result=(sum by (cluster) (network.cost)) | SORT result"
 ```
 
-While `from`, `row` and `ts` can be chained with other functions to build a complex query, `show` will just return the `SHOW INFO` String.
+While `from`, `promqql`, `row` and `ts` can be chained with other functions to build a complex query, `show` will just return the `SHOW INFO` String.
 
 ES|QL can access [document metadata fields](https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/document-metadata-fields). To access these fields, use the `METADATA` directive with the `FROM` source command. For example:
 
@@ -118,7 +126,7 @@ ESQL.from('many_numbers').set(approximation: true).stats(sum: 'sv').query
 # => "SET approximation = true;\nFROM many_numbers | STATS SUM(sv)"
 ```
 
-### DISSECT
+#### DISSECT
 
 [DISSECT](https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok) enables you to extract structured data out of a string. The `dissect` function accepts a input and a pattern:
 
@@ -135,7 +143,7 @@ query.dissect!('a', '%{date} - %{msg} - %{ip}', ',').to_s
 # => 'FROM sample_data | DISSECT a """%{date} - %{msg} - %{ip}""" APPEND_SEPARATOR=","'
 ```
 
-### DROP
+#### DROP
 
 The [DROP](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-drop) processing command removes one or more columns.
 
@@ -144,7 +152,7 @@ query.drop!('column1', 'column2').to_s
 # => 'FROM sample_data | DROP column1, column2'
 ```
 
-### ENRICH
+#### ENRICH
 
 [ENRICH](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-enrich) enables you to add data from existing indices as new columns using an enrich policy.
 
@@ -159,7 +167,7 @@ Once you call `enrich` on an `Elastic::ESQL` object, you can chain `on` and `wit
 esql.enrich!('policy').on('a').with({ name: 'language_name' })
 ```
 
-### EVAL
+#### EVAL
 
 The [EVAL](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-eval) processing command enables you to append new columns with calculated values. EVAL supports various functions for calculating values.
 
@@ -168,7 +176,7 @@ Elastic::ESQL.from('sample_data').eval({ height_feet: 'height * 3.281', height_c
 # => "FROM sample_data | EVAL height_feet = height * 3.281, height_cm = height * 100"
 ```
 
-### FORK
+#### FORK
 
 The [`FORK`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fork) processing command creates multiple execution branches to operate on the same input data and combines the results in a single output table. You can create new branches for `fork` with `ESQL.branch`. This behavior is consistent with other ES|QL query builders in PHP, Python and JavaScript:
 
@@ -183,7 +191,7 @@ esql = Elastic::ESQL.from('employees')
 # => "FROM employees | FORK (WHERE emp_no == 10001) (WHERE emp_no == 10002) | KEEP emp_no, _fork | SORT emp_no"
 ```
 
-### FUSE
+#### FUSE
 
 The [`FUSE`](https://www.elastic.co/docs/reference/query-languages/esql/commands/fuse) processing command merges rows from multiple result sets and assigns new relevance scores.
 
@@ -201,9 +209,21 @@ ESQL.from('books')
     )
     .fuse(:linear).to_s
 # => "FROM books METADATA _id, _index, _score | FORK (WHERE title == \"Shakespeare\" | SORT _score DESC) (WHERE semantic_title == \"Shakespeare\" | SORT _score DESC) | FUSE LINEAR"
+
+# Using fuse + with:
+ESQL.from('books')
+    .metadata('_id, _index, _score')
+    .fork([
+            ESQL.branch.where('title == "Shakespeare"').sort('_score').desc,
+            ESQL.branch.where('semantic_title == "Shakespeare"').sort('_score').desc
+          ])
+    .fuse(:linear)
+    .with({ normalizer: 'minmax' })
+    .query
+# => "FROM books METADATA _id, _index, _score | FORK (WHERE title == \"Shakespeare\" | SORT _score DESC) (WHERE semantic_title == \"Shakespeare\" | SORT _score DESC) | FUSE LINEAR WITH { \"normalizer\": \"minmax\" }"
 ```
 
-### GROK
+#### GROK
 
 [GROK](https://www.elastic.co/docs/reference/query-languages/esql/esql-process-data-with-dissect-grok) enables you to extract structured data out of a string.
 
@@ -212,7 +232,7 @@ query.grok('a', '%{date} - %{msg} - %{ip}').to_s
 # => 'FROM sample_data | GROK a """%{date} - %{msg} - %{ip}"""'
 ```
 
-### KEEP
+#### KEEP
 
 [KEEP](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-keep) enables you to specify what columns are returned and the order in which they are returned.
 
@@ -221,7 +241,7 @@ query.keep('column1', 'column2').to_s
 # => 'FROM sample_data | KEEP column1, column2'
 ```
 
-### LIMIT
+#### LIMIT
 
 [LIMIT](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-limit) the number of rows that are returned, up to a maximum of 10,000 rows
 
@@ -230,7 +250,7 @@ query.limit(2).to_s
 # => 'FROM sample_data | LIMIT 2'
 ```
 
-### LOOKUP JOIN
+#### LOOKUP JOIN
 
 [LOOKUP JOIN](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-lookup-join) enables you to add data from another index, AKA a 'lookup' index, to your ES|QL query results, simplifying data enrichment and analysis workflows.
 
@@ -241,7 +261,7 @@ Elastic::ESQL.from('system_metrics')
 # => FROM system_metrics | LOOKUP JOIN host_inventory ON host.name | LOOKUP JOIN ownerships ON host.name
 ```
 
-### METRICS_INFO
+#### METRICS_INFO
 
 The [METRICS_INFO](https://www.elastic.co/docs/reference/query-languages/esql/commands/metrics-info) processing command retrieves information about the metrics available in time series data streams, along with their applicable dimensions and other metadata.
 
@@ -250,7 +270,7 @@ ESQL.ts('k8s').where(cluster: 'prod').metrics_info.sort('metric_name').query
 # => "TS k8s | WHERE cluster == \"prod\" | METRICS_INFO | SORT metric_name"
 ```
 
-### MV_EXPAND
+#### MV_EXPAND
 
 The [MV_EXPAND](https://www.elastic.co/docs/reference/query-languages/esql/commands/mv_expand) processing command expands multivalued columns into one row per value, duplicating other columns.
 
@@ -259,7 +279,16 @@ Elastic::ESQL.row({ a: [1, 2, 3], b: 'b' }).mv_expand('a').query
 #=> "ROW a = [1, 2, 3], b = \"b\" | MV_EXPAND a"
 ```
 
-### RENAME
+#### REGISTERED_DOMAIN
+
+The [REGISTERED_DOMAIN](https://www.elastic.co/docs/reference/query-languages/esql/commands/registered-domain) processing command parses a fully qualified domain name (FQDN) string and extracts its parts (domain, registered domain, top-level domain, subdomain) into new columns using the public suffix list.
+
+```ruby
+ESQL.row(fqdn: 'www.example.co.uk').registered_domain('rd', 'fqdn').keep('rd.*').query
+# => "ROW fqdn = \"www.example.co.uk\" | REGISTERED_DOMAIN rd = fqdn | KEEP rd.*"
+```
+
+#### RENAME
 
 The [RENAME](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-rename) processing command renames one or more columns. Pass in a Hash where keys are the name of columns you want to rename, and the value is the name of the new column:
 
@@ -268,7 +297,7 @@ query.rename({ first_name: 'fn', last_name: 'ln' }).to_s
 # => 'FROM sample_data | RENAME first_name AS fn, last_name AS ln'
 ```
 
-### RERANK
+#### RERANK
 
 The [RERANK](https://www.elastic.co/docs/reference/query-languages/esql/commands/rerank) command uses an inference model to compute a new relevance score for an initial set of documents, directly within your ES|QL queries.
 
@@ -295,7 +324,7 @@ ESQL.from('books')
 # => "FROM books METADATA _score | WHERE MATCH(description, \"hobbit\") | SORT _score DESC | LIMIT 100 | RERANK \"hobbit\" ON description WITH { \"inference_id\" : \"test_reranker\" } | LIMIT 3 | KEEP title, _score"
 ```
 
-### SAMPLE
+#### SAMPLE
 
 The [SAMPLE](https://www.elastic.co/docs/reference/query-languages/esql/commands/sample) command samples a fraction of the table rows.
 
@@ -304,7 +333,7 @@ Elastic::ESQL.from('employees').keep('emp_no').sample(0.05).query
 # => "FROM employees | KEEP emp_no | SAMPLE 0.05"
 ```
 
-### SORT
+#### SORT
 The [SORT](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-sort) processing command sorts a table on one or more columns.
 
 ```ruby
@@ -322,7 +351,7 @@ Elastic::ESQL.from('sample_data').sort('@timestamp').descending.nulls_first.to_s
 # => 'FROM sample_data | SORT @timestamp DESC NULLS FIRST'
 ```
 
-### STATS, INLINE STATS
+#### STATS, INLINE STATS
 
 The [`STATS`](https://www.elastic.co/docs/reference/query-languages/esql/commands/stats-by) processing command groups rows according to a common value and calculates one or more aggregated values over the grouped rows.
 
@@ -376,7 +405,22 @@ They can be used with `TS`:
 # => "TS k8s | WHERE cluster == \"prod\" AND pod == \"two\" | STATS events_received = MAX(ABSENT_OVER_TIME(events_received)) BY pod, time_bucket = TBUCKET(2 minute)"
 ```
 
-### USER_AGENT
+
+#### URI_PARTS
+
+The [URI_PARTS](https://www.elastic.co/docs/reference/query-languages/esql/commands/uri-parts) processing command parses a Uniform Resource Identifier (URI) string and extracts its components into new columns.
+
+```ruby
+ESQL.from('web_logs')
+    .uri_parts('p', 'uri')
+    .where('p.domain == "www.example.com"')
+    .stats(count: '*')
+    .by('p.path')
+    .query
+# => "FROM web_logs | URI_PARTS p = uri | WHERE p.domain == \"www.example.com\" | STATS COUNT(*) BY p.path"
+```
+
+#### USER_AGENT
 
 The [USER_AGENT](https://www.elastic.co/docs/reference/query-languages/esql/commands/user-agent) processing command parses a user-agent string and extracts its components (name, version, OS, device) into new columns.
 
@@ -389,7 +433,7 @@ The [USER_AGENT](https://www.elastic.co/docs/reference/query-languages/esql/comm
 # => "ROW ua_str = \"Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0\" | USER_AGENT ua = ua_str WITH { \"properties\": [\"name\", \"version\", \"device\"], \"extract_device_type\": true } | KEEP ua.*"
 ```
 
-### WHERE
+#### WHERE
 
 Use the [WHERE](https://www.elastic.co/docs/reference/query-languages/esql/commands/processing-commands#esql-where) command to query the data.
 
@@ -408,7 +452,7 @@ Elastic::ESQL.from('sample').where('first_name == "Juan"').where('last_name == "
 # => "FROM sample | WHERE first_name == \"Juan\" AND last_name == \"Perez\" AND age > 18"
 ```
 
-### CHICKEN
+#### CHICKEN
 
 The `CHICKEN` function wraps any text message in ASCII art of a chicken saying the message. Example usage:
 ```ruby
