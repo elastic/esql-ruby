@@ -32,6 +32,7 @@ require_relative 'lookup_join'
 require_relative 'metadata'
 require_relative 'metrics_info'
 require_relative 'mv_expand'
+require_relative 'promql'
 require_relative 'queryable'
 require_relative 'registered_domain'
 require_relative 'rename'
@@ -54,11 +55,11 @@ module Elastic
   class ESQL
     [
       ChangePoint, Custom, Dissect, Drop, Eval, Fork, Fuse, Grok, InlineStats, Keep, LookupJoin,
-      Metadata, MetricsInfo, MvExpand, Queryable, RegisteredDomain, Rename, Row, Sample,
+      Metadata, MetricsInfo, MvExpand, PromQL, Queryable, RegisteredDomain, Rename, Row, Sample,
       SetDirective, Show, Stats, StatsMixin, TS, URIParts, Util
     ].each { |m| include m }
 
-    SOURCE_COMMANDS = [:from, :row, :show, :ts].freeze
+    SOURCE_COMMANDS = [:from, :promql, :row, :show, :ts].freeze
 
     def initialize
       @query = {}
@@ -105,6 +106,12 @@ module Elastic
     # @see https://www.elastic.co/docs/reference/query-languages/esql/commands/source-commands#esql-from
     def self.from(index_pattern)
       new.from(index_pattern)
+    end
+
+    # Class method to allow static instantiation.
+    # @see PromQL#promql
+    def self.promql(params)
+      new.promql(params)
     end
 
     # The SHOW source command returns information about the deployment and its capabilities.
